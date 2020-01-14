@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace DB91
 {
@@ -17,223 +19,6 @@ namespace DB91
         {
             InitializeComponent();
         }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            string connetionString = null;
-            SqlConnection cnn;
-            connetionString = txtConnStr.Text;
-            cnn = new SqlConnection(connetionString);
-
-            
-
-            try
-            {
-                cnn.Open();
-                #region Tablas
-                tvTablasOrigen.Nodes.Clear();
-                string queryObtenerTablas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'BASE TABLE'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
-                SqlCommand command = new SqlCommand(queryObtenerTablas, cnn);
-                SqlDataReader dataReader = command.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    tvTablasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
-                }
-                dataReader.Close();
-                command.Dispose();
-                #endregion
-
-                #region Stored procedures
-                tvStoredOrigen.Nodes.Clear();
-                string queryObtenerStored = $"SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'  AND  SPECIFIC_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
-                command = new SqlCommand(queryObtenerStored, cnn);
-                dataReader = command.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    tvStoredOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
-                }
-                dataReader.Close();
-                command.Dispose();
-                #endregion
-
-                #region Vistas
-                tvVistasOrigen.Nodes.Clear();
-                string queryObtenerVistas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'VIEW'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
-                command = new SqlCommand(queryObtenerVistas, cnn);
-                dataReader = command.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    tvVistasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
-                }
-                dataReader.Close();
-                command.Dispose();
-                #endregion
-
-                #region Funciones
-                tvFuncionesOrigen.Nodes.Clear();
-                string queryObtenerFunciones = $"SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'  AND  SPECIFIC_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
-                command = new SqlCommand(queryObtenerFunciones, cnn);
-                dataReader = command.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    tvFuncionesOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
-                }
-                dataReader.Close();
-                command.Dispose();
-                #endregion
-
-                txtConnStr.ReadOnly = true;
-                txtCatalog.ReadOnly = true;
-                cnn.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Can not open connection ! ");
-            }
-
-        }
-
-        private void btnAgregarTabla_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var nodo = tvTablasOrigen.SelectedNode;
-                tvTablasOrigen.Nodes.Remove(nodo);
-                tvTablasDestino.Nodes.Add(nodo);
-                //tvOrigen.Sort();
-                //tvDestino.Sort();
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        private void btnQuitarTabla_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var nodo = tvTablasDestino.SelectedNode;
-                tvTablasDestino.Nodes.Remove(nodo);
-                tvTablasOrigen.Nodes.Add(nodo);
-                //tvOrigen.Sort();
-                //tvDestino.Sort();
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            txtScriptSQL.Text = $"-- CREAR DB \n\n if not exists(select * from sys.databases where name = '{txtCatalog.Text}') create database {txtCatalog.Text} \n GO \n\n USE [{txtCatalog.Text}] \n go \n\n";
-
-            txtScriptSQL.AppendText("-- CREAR SCHEMAS\n\n");
-            txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  *  FROM    sys.schemas WHERE   name = N'CRPCTL' )\n EXEC('CREATE SCHEMA [CRPCTL]')\n GO\n");
-            txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  * FROM    sys.schemas WHERE   name = N'CRPDTA' ) \nEXEC('CREATE SCHEMA [CRPDTA]') \nGO\n\n");
-            string connetionString = null;
-            SqlConnection cnn;
-            connetionString = txtConnStr.Text;
-            cnn = new SqlConnection(connetionString);
-
-            try
-            {
-                cnn.Open();
-                #region Tablas
-                txtScriptSQL.AppendText("-- CREAR TABLAS\n\n");
-                foreach (TreeNode nodo in tvTablasDestino.Nodes)
-                {
-
-                    var partes = nodo.Text.Split('.');
-                    string Tabla = partes[1] + "." + partes[2];
-                    string queryCopiar = StringCopiarTabla.Replace("{Tabla}", Tabla);
-                    SqlCommand command = new SqlCommand(queryCopiar, cnn);
-                    SqlDataReader dataReader = command.ExecuteReader();
-                    txtScriptSQL.AppendText($"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{partes[1]}' AND TABLE_NAME = '{partes[2]}')\n DROP TABLE  {partes[1]}.{partes[2]} \n go \n");
-                    while (dataReader.Read())
-                    {
-                        txtScriptSQL.AppendText(dataReader.GetString(0));
-                        txtScriptSQL.AppendText(dataReader.GetString(1));
-                    }
-                    txtScriptSQL.AppendText("GO\n");
-                    dataReader.Close();
-                    command.Dispose();
-                }
-                #endregion
-
-                #region stored procedures
-                txtScriptSQL.AppendText("-- CREAR STORED PROCEDURES\n\n");
-                foreach (TreeNode nodo in tvStoredDestino.Nodes)
-                {
-                    
-                    var partes = nodo.Text.Split('.');
-                    string Tabla = partes[1] + "." + partes[2];
-                    txtScriptSQL.AppendText($"IF EXISTS ( SELECT *  FROM INFORMATION_SCHEMA.ROUTINES where ROUTINE_TYPE = 'PROCEDURE' and SPECIFIC_NAME ='{partes[2]}' and SPECIFIC_SCHEMA ='{partes[1]}' )\n DROP PROCEDURE [{partes[1]}].[{partes[2]}] \n go\n");
-                    string queryCopiar = $"sp_helptext '{Tabla}'";
-                    SqlCommand command = new SqlCommand(queryCopiar, cnn);
-                    SqlDataReader dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        txtScriptSQL.AppendText(dataReader.GetString(0));
-                    }
-                    txtScriptSQL.AppendText("GO\n");
-                    dataReader.Close();
-                    command.Dispose();
-                }
-                #endregion
-
-                #region Vistas
-                txtScriptSQL.AppendText("-- CREAR VISTAS\n\n");
-                foreach (TreeNode nodo in tvVistasDestino.Nodes)
-                {
-
-                    var partes = nodo.Text.Split('.');
-                    string Tabla = partes[1] + "." + partes[2];
-                    txtScriptSQL.AppendText($"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1 = 1 and  TABLE_TYPE = 'VIEW' AND TABLE_CATALOG = '{partes[0]}' and TABLE_SCHEMA = '{partes[1]}' and TABLE_NAME = '{partes[2]}') \n DROP VIEW {partes[1]}.{partes[2]} \n go \n");
-                    string queryCopiar = $"sp_helptext '{Tabla}'";
-                    SqlCommand command = new SqlCommand(queryCopiar, cnn);
-                    SqlDataReader dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        txtScriptSQL.AppendText(dataReader.GetString(0));
-                    }
-                    txtScriptSQL.AppendText("GO\n");
-                    dataReader.Close();
-                    command.Dispose();
-                }
-                #endregion
-
-                #region Funciones
-                txtScriptSQL.AppendText("-- CREAR FUNCIONES\n\n");
-                foreach (TreeNode nodo in tvFuncionesDestino.Nodes)
-                {
-
-                    var partes = nodo.Text.Split('.');
-                    string Tabla = partes[1] + "." + partes[2];
-                    txtScriptSQL.AppendText($"IF EXISTS ( SELECT *  FROM INFORMATION_SCHEMA.ROUTINES where ROUTINE_TYPE = 'FUNCTION' and SPECIFIC_NAME ='{partes[2]}' and SPECIFIC_SCHEMA ='{partes[1]}' )\n DROP FUNCTION  [{partes[1]}].[{partes[2]}] \n go \n");
-                    string queryCopiar = $"sp_helptext '{Tabla}'";
-                    SqlCommand command = new SqlCommand(queryCopiar, cnn);
-                    SqlDataReader dataReader = command.ExecuteReader();
-                    while (dataReader.Read())
-                    {
-                        txtScriptSQL.AppendText(dataReader.GetString(0));
-                    }
-                    txtScriptSQL.AppendText("GO\n");
-                    dataReader.Close();
-                    command.Dispose();
-                }
-                #endregion
-                cnn.Close();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-
-
-
         #region Query de copiar
         string StringCopiarTabla = "DECLARE @table_name SYSNAME                                                                                                                                                             "
 + "SELECT @table_name = '{Tabla}'                                                                                                                                                     "
@@ -411,15 +196,252 @@ namespace DB91
 + "select @SQL, @SQL2                                                                                                                                                                      ";
         #endregion
 
+        TreeView _tvTablasOrigen = new TreeView();
+        TreeView _tvStoredOrigen = new TreeView();
+        TreeView _tvVistasOrigen = new TreeView();
+        TreeView _tvFuncionesOrigen = new TreeView();
+
+        TreeView _tvTablasDestino = new TreeView();
+        TreeView _tvStoredDestino = new TreeView();
+        TreeView _tvVistasDestino = new TreeView();
+        TreeView _tvFuncionesDestino = new TreeView();
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string connetionString = null;
+            SqlConnection cnn;
+            connetionString = txtConnStr.Text;
+            cnn = new SqlConnection(connetionString);
+
+
+
+            try
+            {
+                cnn.Open();
+                #region Tablas
+                tvTablasOrigen.Nodes.Clear();
+                string queryObtenerTablas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'BASE TABLE'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
+                SqlCommand command = new SqlCommand(queryObtenerTablas, cnn);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    tvTablasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                    _tvTablasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                }
+                dataReader.Close();
+                command.Dispose();
+                #endregion
+
+                #region Stored procedures
+                tvStoredOrigen.Nodes.Clear();
+                string queryObtenerStored = $"SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'  AND  SPECIFIC_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
+                command = new SqlCommand(queryObtenerStored, cnn);
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    tvStoredOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                    _tvStoredOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                }
+                dataReader.Close();
+                command.Dispose();
+                #endregion
+
+                #region Vistas
+                tvVistasOrigen.Nodes.Clear();
+                string queryObtenerVistas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'VIEW'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
+                command = new SqlCommand(queryObtenerVistas, cnn);
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    tvVistasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                    _tvVistasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                }
+                dataReader.Close();
+                command.Dispose();
+                #endregion
+
+                #region Funciones
+                tvFuncionesOrigen.Nodes.Clear();
+                string queryObtenerFunciones = $"SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'  AND  SPECIFIC_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
+                command = new SqlCommand(queryObtenerFunciones, cnn);
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    tvFuncionesOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                    _tvFuncionesOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                }
+                dataReader.Close();
+                command.Dispose();
+                #endregion
+
+                txtConnStr.ReadOnly = true;
+                txtCatalog.ReadOnly = true;
+                cnn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Can not open connection ! ");
+            }
+
+        }
+
+        private void btnAgregarTabla_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var nodo = tvTablasOrigen.SelectedNode;
+                foreach (TreeNode n in tvTablasDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) return;
+                }
+                tvTablasDestino.Nodes.Add((TreeNode)tvTablasOrigen.SelectedNode.Clone());
+                _tvTablasDestino.Nodes.Add((TreeNode)tvTablasOrigen.SelectedNode.Clone());
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void btnQuitarTabla_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var nodo = tvTablasDestino.SelectedNode;
+                tvTablasDestino.Nodes.Remove(nodo);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            txtScriptSQL.Text = $"-- CREAR DB \n\n if not exists(select * from sys.databases where name = '{txtCatalog.Text}') create database {txtCatalog.Text} \n GO \n\n USE [{txtCatalog.Text}] \n go \n\n";
+
+            txtScriptSQL.AppendText("-- CREAR SCHEMAS\n\n");
+            txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  *  FROM    sys.schemas WHERE   name = N'CRPCTL' )\n EXEC('CREATE SCHEMA [CRPCTL]')\n GO\n");
+            txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  * FROM    sys.schemas WHERE   name = N'CRPDTA' ) \nEXEC('CREATE SCHEMA [CRPDTA]') \nGO\n\n");
+            string connetionString = null;
+            SqlConnection cnn;
+            connetionString = txtConnStr.Text;
+            cnn = new SqlConnection(connetionString);
+
+            try
+            {
+                cnn.Open();
+                #region Tablas
+                txtScriptSQL.AppendText("-- CREAR TABLAS\n\n");
+                foreach (TreeNode nodo in _tvTablasDestino.Nodes)
+                {
+
+                    var partes = nodo.Text.Split('.');
+                    string Tabla = partes[1] + "." + partes[2];
+                    string queryCopiar = StringCopiarTabla.Replace("{Tabla}", Tabla);
+                    SqlCommand command = new SqlCommand(queryCopiar, cnn);
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    txtScriptSQL.AppendText($"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{partes[1]}' AND TABLE_NAME = '{partes[2]}')\n DROP TABLE  {partes[1]}.{partes[2]} \n go \n");
+                    while (dataReader.Read())
+                    {
+                        txtScriptSQL.AppendText(dataReader.GetString(0));
+                        txtScriptSQL.AppendText(dataReader.GetString(1));
+                    }
+                    txtScriptSQL.AppendText("GO\n");
+                    dataReader.Close();
+                    command.Dispose();
+                }
+                #endregion
+
+                #region stored procedures
+                txtScriptSQL.AppendText("-- CREAR STORED PROCEDURES\n\n");
+                foreach (TreeNode nodo in _tvStoredDestino.Nodes)
+                {
+
+                    var partes = nodo.Text.Split('.');
+                    string Tabla = partes[1] + "." + partes[2];
+                    txtScriptSQL.AppendText($"IF EXISTS ( SELECT *  FROM INFORMATION_SCHEMA.ROUTINES where ROUTINE_TYPE = 'PROCEDURE' and SPECIFIC_NAME ='{partes[2]}' and SPECIFIC_SCHEMA ='{partes[1]}' )\n DROP PROCEDURE [{partes[1]}].[{partes[2]}] \n go\n");
+                    string queryCopiar = $"sp_helptext '{Tabla}'";
+                    SqlCommand command = new SqlCommand(queryCopiar, cnn);
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        txtScriptSQL.AppendText(dataReader.GetString(0));
+                    }
+                    txtScriptSQL.AppendText("GO\n");
+                    dataReader.Close();
+                    command.Dispose();
+                }
+                #endregion
+
+                #region Vistas
+                txtScriptSQL.AppendText("-- CREAR VISTAS\n\n");
+                foreach (TreeNode nodo in _tvVistasDestino.Nodes)
+                {
+
+                    var partes = nodo.Text.Split('.');
+                    string Tabla = partes[1] + "." + partes[2];
+                    txtScriptSQL.AppendText($"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1 = 1 and  TABLE_TYPE = 'VIEW' AND TABLE_CATALOG = '{partes[0]}' and TABLE_SCHEMA = '{partes[1]}' and TABLE_NAME = '{partes[2]}') \n DROP VIEW {partes[1]}.{partes[2]} \n go \n");
+                    string queryCopiar = $"sp_helptext '{Tabla}'";
+                    SqlCommand command = new SqlCommand(queryCopiar, cnn);
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        txtScriptSQL.AppendText(dataReader.GetString(0));
+                    }
+                    txtScriptSQL.AppendText("GO\n");
+                    dataReader.Close();
+                    command.Dispose();
+                }
+                #endregion
+
+                #region Funciones
+                txtScriptSQL.AppendText("-- CREAR FUNCIONES\n\n");
+                foreach (TreeNode nodo in _tvFuncionesDestino.Nodes)
+                {
+
+                    var partes = nodo.Text.Split('.');
+                    string Tabla = partes[1] + "." + partes[2];
+                    txtScriptSQL.AppendText($"IF EXISTS ( SELECT *  FROM INFORMATION_SCHEMA.ROUTINES where ROUTINE_TYPE = 'FUNCTION' and SPECIFIC_NAME ='{partes[2]}' and SPECIFIC_SCHEMA ='{partes[1]}' )\n DROP FUNCTION  [{partes[1]}].[{partes[2]}] \n go \n");
+                    string queryCopiar = $"sp_helptext '{Tabla}'";
+                    SqlCommand command = new SqlCommand(queryCopiar, cnn);
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        txtScriptSQL.AppendText(dataReader.GetString(0));
+                    }
+                    txtScriptSQL.AppendText("GO\n");
+                    dataReader.Close();
+                    command.Dispose();
+                }
+                #endregion
+                cnn.Close();
+
+
+                btnGuardarScript.Enabled = true;
+                btnEjecutarScript.Enabled = true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+
+
+
+
         private void button4_Click(object sender, EventArgs e)
         {
             try
             {
                 var nodo = tvStoredOrigen.SelectedNode;
-                tvStoredOrigen.Nodes.Remove(nodo);
-                tvStoredDestino.Nodes.Add(nodo);
-                //tvOrigen.Sort();
-                //tvDestino.Sort();
+                foreach (TreeNode n in tvStoredDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) return;
+                }
+                tvStoredDestino.Nodes.Add((TreeNode)tvStoredOrigen.SelectedNode.Clone());
+                _tvStoredDestino.Nodes.Add((TreeNode)tvStoredOrigen.SelectedNode.Clone());
             }
             catch (Exception)
             {
@@ -432,9 +454,6 @@ namespace DB91
             {
                 var nodo = tvStoredDestino.SelectedNode;
                 tvStoredDestino.Nodes.Remove(nodo);
-                tvStoredOrigen.Nodes.Add(nodo);
-                //tvOrigen.Sort();
-                //tvDestino.Sort();
             }
             catch (Exception)
             {
@@ -446,14 +465,17 @@ namespace DB91
             try
             {
                 var nodo = tvVistasOrigen.SelectedNode;
-                tvVistasOrigen.Nodes.Remove(nodo);
-                tvVistasDestino.Nodes.Add(nodo);
-                //tvOrigen.Sort();
-                //tvDestino.Sort();
+                foreach (TreeNode n in tvVistasDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) return;
+                }
+                tvVistasDestino.Nodes.Add((TreeNode)tvVistasOrigen.SelectedNode.Clone());
+                _tvVistasDestino.Nodes.Add((TreeNode)tvVistasOrigen.SelectedNode.Clone());
             }
             catch (Exception)
             {
             }
+
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -462,9 +484,6 @@ namespace DB91
             {
                 var nodo = tvVistasDestino.SelectedNode;
                 tvVistasDestino.Nodes.Remove(nodo);
-                tvVistasOrigen.Nodes.Add(nodo);
-                //tvOrigen.Sort();
-                //tvDestino.Sort();
             }
             catch (Exception)
             {
@@ -476,10 +495,12 @@ namespace DB91
             try
             {
                 var nodo = tvFuncionesOrigen.SelectedNode;
-                tvFuncionesOrigen.Nodes.Remove(nodo);
-                tvFuncionesDestino.Nodes.Add(nodo);
-                //tvOrigen.Sort();
-                //tvDestino.Sort();
+                foreach (TreeNode n in tvFuncionesDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) return;
+                }
+                tvFuncionesDestino.Nodes.Add((TreeNode)tvFuncionesOrigen.SelectedNode.Clone());
+                _tvFuncionesDestino.Nodes.Add((TreeNode)tvFuncionesOrigen.SelectedNode.Clone());
             }
             catch (Exception)
             {
@@ -492,9 +513,6 @@ namespace DB91
             {
                 var nodo = tvFuncionesDestino.SelectedNode;
                 tvFuncionesDestino.Nodes.Remove(nodo);
-                tvFuncionesOrigen.Nodes.Add(nodo);
-                //tvOrigen.Sort();
-                //tvDestino.Sort() ;
             }
             catch (Exception)
             {
@@ -520,5 +538,246 @@ namespace DB91
             tvVistasOrigen.Nodes.Clear();
 
         }
+
+        private void txtFiltroTablasOrigen_TextChanged(object sender, EventArgs e)
+        {
+            //blocks repainting tree till all objects loaded
+            this.tvTablasOrigen.BeginUpdate();
+            this.tvTablasOrigen.Nodes.Clear();
+            if (this.txtFiltroTablasOrigen.Text != string.Empty)
+            {
+                foreach (TreeNode nodo in _tvTablasOrigen.Nodes)
+                {
+                    if (nodo.Text.ToUpper().Contains(this.txtFiltroTablasOrigen.Text.ToUpper()))
+                    {
+                        this.tvTablasOrigen.Nodes.Add((TreeNode)nodo.Clone());
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeNode _node in this._tvTablasOrigen.Nodes)
+                {
+                    tvTablasOrigen.Nodes.Add((TreeNode)_node.Clone());
+                }
+            }
+            //enables redrawing tree after all objects have been added
+            this.tvTablasOrigen.EndUpdate();
+        }
+
+        private void txtFiltroStoredOrigen_TextChanged(object sender, EventArgs e)
+        {
+            //blocks repainting tree till all objects loaded
+            this.tvStoredOrigen.BeginUpdate();
+            this.tvStoredOrigen.Nodes.Clear();
+            if (this.txtFiltroStoredOrigen.Text != string.Empty)
+            {
+                foreach (TreeNode nodo in _tvStoredOrigen.Nodes)
+                {
+                    if (nodo.Text.ToUpper().Contains(this.txtFiltroStoredOrigen.Text.ToUpper()))
+                    {
+                        this.tvStoredOrigen.Nodes.Add((TreeNode)nodo.Clone());
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeNode _node in this._tvStoredOrigen.Nodes)
+                {
+                    tvStoredOrigen.Nodes.Add((TreeNode)_node.Clone());
+                }
+            }
+            //enables redrawing tree after all objects have been added
+            this.tvStoredOrigen.EndUpdate();
+        }
+
+        private void tvFiltroVistasOrigen_TextChanged(object sender, EventArgs e)
+        {
+            //blocks repainting tree till all objects loaded
+            this.tvVistasOrigen.BeginUpdate();
+            this.tvVistasOrigen.Nodes.Clear();
+            if (this.txtFiltroVistasOrigen.Text != string.Empty)
+            {
+                foreach (TreeNode nodo in _tvVistasOrigen.Nodes)
+                {
+                    if (nodo.Text.ToUpper().Contains(this.txtFiltroVistasOrigen.Text.ToUpper()))
+                    {
+                        this.tvVistasOrigen.Nodes.Add((TreeNode)nodo.Clone());
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeNode _node in this._tvVistasOrigen.Nodes)
+                {
+                    tvVistasOrigen.Nodes.Add((TreeNode)_node.Clone());
+                }
+            }
+            //enables redrawing tree after all objects have been added
+            this.tvVistasOrigen.EndUpdate();
+        }
+
+        private void tvFiltroFuncionesOrigen_TextChanged(object sender, EventArgs e)
+        {
+            //blocks repainting tree till all objects loaded
+            this.tvFuncionesOrigen.BeginUpdate();
+            this.tvFuncionesOrigen.Nodes.Clear();
+            if (this.txtFiltroFuncionesOrigen.Text != string.Empty)
+            {
+                foreach (TreeNode nodo in _tvFuncionesOrigen.Nodes)
+                {
+                    if (nodo.Text.ToUpper().Contains(this.txtFiltroFuncionesOrigen.Text.ToUpper()))
+                    {
+                        this.tvFuncionesOrigen.Nodes.Add((TreeNode)nodo.Clone());
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeNode _node in this._tvFuncionesOrigen.Nodes)
+                {
+                    tvFuncionesOrigen.Nodes.Add((TreeNode)_node.Clone());
+                }
+            }
+            //enables redrawing tree after all objects have been added
+            this.tvFuncionesOrigen.EndUpdate();
+        }
+
+        private void txtFiltroTablasDestino_TextChanged(object sender, EventArgs e)
+        {
+            //blocks repainting tree till all objects loaded
+            this.tvTablasDestino.BeginUpdate();
+            this.tvTablasDestino.Nodes.Clear();
+            if (this.txtFiltroTablasDestino.Text != string.Empty)
+            {
+                foreach (TreeNode nodo in _tvTablasDestino.Nodes)
+                {
+                    if (nodo.Text.ToUpper().Contains(this.txtFiltroTablasDestino.Text.ToUpper()))
+                    {
+                        this.tvTablasDestino.Nodes.Add((TreeNode)nodo.Clone());
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeNode _node in this._tvTablasDestino.Nodes)
+                {
+                    tvTablasDestino.Nodes.Add((TreeNode)_node.Clone());
+                }
+            }
+            //enables redrawing tree after all objects have been added
+            this.tvTablasDestino.EndUpdate();
+        }
+
+        private void txtFiltroStoredDestino_TextChanged(object sender, EventArgs e)
+        {
+            //blocks repainting tree till all objects loaded
+            this.tvStoredDestino.BeginUpdate();
+            this.tvStoredDestino.Nodes.Clear();
+            if (this.txtFiltroStoredDestino.Text != string.Empty)
+            {
+                foreach (TreeNode nodo in _tvStoredDestino.Nodes)
+                {
+                    if (nodo.Text.ToUpper().Contains(this.txtFiltroStoredDestino.Text.ToUpper()))
+                    {
+                        this.tvStoredDestino.Nodes.Add((TreeNode)nodo.Clone());
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeNode _node in this._tvStoredDestino.Nodes)
+                {
+                    tvStoredDestino.Nodes.Add((TreeNode)_node.Clone());
+                }
+            }
+            //enables redrawing tree after all objects have been added
+            this.tvStoredDestino.EndUpdate();
+        }
+
+        private void tvFiltroVistasDestino_TextChanged(object sender, EventArgs e)
+        {
+            //blocks repainting tree till all objects loaded
+            this.tvVistasDestino.BeginUpdate();
+            this.tvVistasDestino.Nodes.Clear();
+            if (this.txtFiltroVistasDestino.Text != string.Empty)
+            {
+                foreach (TreeNode nodo in _tvVistasDestino.Nodes)
+                {
+                    if (nodo.Text.ToUpper().Contains(this.txtFiltroVistasDestino.Text.ToUpper()))
+                    {
+                        this.tvVistasDestino.Nodes.Add((TreeNode)nodo.Clone());
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeNode _node in this._tvVistasDestino.Nodes)
+                {
+                    tvVistasDestino.Nodes.Add((TreeNode)_node.Clone());
+                }
+            }
+            //enables redrawing tree after all objects have been added
+            this.tvVistasDestino.EndUpdate();
+        }
+
+        private void tvFiltroFuncionesDestino_TextChanged(object sender, EventArgs e)
+        {
+            //blocks repainting tree till all objects loaded
+            this.tvFuncionesDestino.BeginUpdate();
+            this.tvFuncionesDestino.Nodes.Clear();
+            if (this.txtFiltroFuncionesDestino.Text != string.Empty)
+            {
+                foreach (TreeNode nodo in _tvFuncionesDestino.Nodes)
+                {
+                    if (nodo.Text.ToUpper().Contains(this.txtFiltroFuncionesDestino.Text.ToUpper()))
+                    {
+                        this.tvFuncionesDestino.Nodes.Add((TreeNode)nodo.Clone());
+                    }
+                }
+            }
+            else
+            {
+                foreach (TreeNode _node in this._tvFuncionesDestino.Nodes)
+                {
+                    tvFuncionesDestino.Nodes.Add((TreeNode)_node.Clone());
+                }
+            }
+            //enables redrawing tree after all objects have been added
+            this.tvFuncionesDestino.EndUpdate();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();   
+            saveFileDialog1.Title = "Guardar sql";
+            saveFileDialog1.DefaultExt = "sql";
+            saveFileDialog1.Filter = "Script SQL (*.sql)|*.sql|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                System.IO.File.WriteAllText(saveFileDialog1.FileName, txtScriptSQL.Text);
+            }
+        }
+
+        private void btnEjecutarScript_Click(object sender, EventArgs e)
+        {
+            string connetionString = null;
+            SqlConnection cnn;
+            connetionString = txtConStrDestino.Text;
+            try
+            {
+                string script = txtScriptSQL.Text;
+                SqlConnection conn = new SqlConnection(connetionString);
+                Server server = new Server(new ServerConnection(conn));
+                server.ConnectionContext.ExecuteNonQuery(script);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Algo salió mal :( \n"+ex.Message);
+            }
+        }
     }
 }
+
