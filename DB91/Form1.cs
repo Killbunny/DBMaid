@@ -477,7 +477,7 @@ namespace DB91
                 tvFuncionesDestino.Nodes.Remove(nodo);
                 tvFuncionesOrigen.Nodes.Add(nodo);
                 //tvOrigen.Sort();
-                //tvDestino.Sort();
+                //tvDestino.Sort() ;
             }
             catch (Exception)
             {
