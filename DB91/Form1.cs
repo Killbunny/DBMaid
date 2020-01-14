@@ -82,7 +82,8 @@ namespace DB91
                 command.Dispose();
                 #endregion
 
-
+                txtConnStr.ReadOnly = true;
+                txtCatalog.ReadOnly = true;
                 cnn.Close();
             }
             catch (Exception ex)
@@ -124,7 +125,11 @@ namespace DB91
 
         private void button2_Click(object sender, EventArgs e)
         {
-            txtScriptSQL.Text = "";
+            txtScriptSQL.Text = $"-- CREAR DB \n\n if not exists(select * from sys.databases where name = '{txtCatalog.Text}') create database {txtCatalog.Text} \n GO \n\n USE [{txtCatalog.Text}] \n go \n\n";
+
+            txtScriptSQL.AppendText("-- CREAR SCHEMAS\n\n");
+            txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  *  FROM    sys.schemas WHERE   name = N'CRPCTL' )\n EXEC('CREATE SCHEMA [CRPCTL]')\n GO\n");
+            txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  * FROM    sys.schemas WHERE   name = N'CRPDTA' ) \nEXEC('CREATE SCHEMA [CRPDTA]') \nGO\n\n");
             string connetionString = null;
             SqlConnection cnn;
             connetionString = txtConnStr.Text;
@@ -134,6 +139,7 @@ namespace DB91
             {
                 cnn.Open();
                 #region Tablas
+                txtScriptSQL.AppendText("-- CREAR TABLAS\n\n");
                 foreach (TreeNode nodo in tvTablasDestino.Nodes)
                 {
 
@@ -142,22 +148,26 @@ namespace DB91
                     string queryCopiar = StringCopiarTabla.Replace("{Tabla}", Tabla);
                     SqlCommand command = new SqlCommand(queryCopiar, cnn);
                     SqlDataReader dataReader = command.ExecuteReader();
+                    txtScriptSQL.AppendText($"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{partes[1]}' AND TABLE_NAME = '{partes[2]}')\n DROP TABLE  {partes[1]}.{partes[2]} \n go \n");
                     while (dataReader.Read())
                     {
                         txtScriptSQL.AppendText(dataReader.GetString(0));
                         txtScriptSQL.AppendText(dataReader.GetString(1));
                     }
+                    txtScriptSQL.AppendText("GO\n");
                     dataReader.Close();
                     command.Dispose();
                 }
                 #endregion
 
                 #region stored procedures
+                txtScriptSQL.AppendText("-- CREAR STORED PROCEDURES\n\n");
                 foreach (TreeNode nodo in tvStoredDestino.Nodes)
                 {
-
+                    
                     var partes = nodo.Text.Split('.');
                     string Tabla = partes[1] + "." + partes[2];
+                    txtScriptSQL.AppendText($"IF EXISTS ( SELECT *  FROM INFORMATION_SCHEMA.ROUTINES where ROUTINE_TYPE = 'PROCEDURE' and SPECIFIC_NAME ='{partes[2]}' and SPECIFIC_SCHEMA ='{partes[1]}' )\n DROP PROCEDURE [{partes[1]}].[{partes[2]}] \n go\n");
                     string queryCopiar = $"sp_helptext '{Tabla}'";
                     SqlCommand command = new SqlCommand(queryCopiar, cnn);
                     SqlDataReader dataReader = command.ExecuteReader();
@@ -165,17 +175,20 @@ namespace DB91
                     {
                         txtScriptSQL.AppendText(dataReader.GetString(0));
                     }
+                    txtScriptSQL.AppendText("GO\n");
                     dataReader.Close();
                     command.Dispose();
                 }
                 #endregion
 
                 #region Vistas
+                txtScriptSQL.AppendText("-- CREAR VISTAS\n\n");
                 foreach (TreeNode nodo in tvVistasDestino.Nodes)
                 {
 
                     var partes = nodo.Text.Split('.');
                     string Tabla = partes[1] + "." + partes[2];
+                    txtScriptSQL.AppendText($"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1 = 1 and  TABLE_TYPE = 'VIEW' AND TABLE_CATALOG = '{partes[0]}' and TABLE_SCHEMA = '{partes[1]}' and TABLE_NAME = '{partes[2]}') \n DROP VIEW {partes[1]}.{partes[2]} \n go \n");
                     string queryCopiar = $"sp_helptext '{Tabla}'";
                     SqlCommand command = new SqlCommand(queryCopiar, cnn);
                     SqlDataReader dataReader = command.ExecuteReader();
@@ -183,17 +196,20 @@ namespace DB91
                     {
                         txtScriptSQL.AppendText(dataReader.GetString(0));
                     }
+                    txtScriptSQL.AppendText("GO\n");
                     dataReader.Close();
                     command.Dispose();
                 }
                 #endregion
 
                 #region Funciones
+                txtScriptSQL.AppendText("-- CREAR FUNCIONES\n\n");
                 foreach (TreeNode nodo in tvFuncionesDestino.Nodes)
                 {
 
                     var partes = nodo.Text.Split('.');
                     string Tabla = partes[1] + "." + partes[2];
+                    txtScriptSQL.AppendText($"IF EXISTS ( SELECT *  FROM INFORMATION_SCHEMA.ROUTINES where ROUTINE_TYPE = 'FUNCTION' and SPECIFIC_NAME ='{partes[2]}' and SPECIFIC_SCHEMA ='{partes[1]}' )\n DROP FUNCTION  [{partes[1]}].[{partes[2]}] \n go \n");
                     string queryCopiar = $"sp_helptext '{Tabla}'";
                     SqlCommand command = new SqlCommand(queryCopiar, cnn);
                     SqlDataReader dataReader = command.ExecuteReader();
@@ -201,6 +217,7 @@ namespace DB91
                     {
                         txtScriptSQL.AppendText(dataReader.GetString(0));
                     }
+                    txtScriptSQL.AppendText("GO\n");
                     dataReader.Close();
                     command.Dispose();
                 }
@@ -261,7 +278,7 @@ namespace DB91
 + "    JOIN sys.columns c WITH (NOWAIT) ON c.[object_id] = k.parent_object_id AND c.column_id = k.parent_column_id                                                                         "
 + "    WHERE k.parent_object_id = @object_id                                                                                                                                               "
 + ")                                                                                                                                                                                       "
-+ "SELECT @SQL = 'CREATE TABLE ' + @object_name + CHAR(13) + '(' + CHAR(13) + STUFF((                                                                                                      "
++ "SELECT @SQL = '  CREATE TABLE ' + @object_name + CHAR(13) + '(' + CHAR(13) + STUFF((                                                                                                      "
 + "    SELECT CHAR(9) + ', [' + c.name + '] ' +                                                                                                                                            "
 + "        CASE WHEN c.is_computed = 1                                                                                                                                                     "
 + "            THEN 'AS ' + cc.[definition]                                                                                                                                                "
@@ -482,6 +499,26 @@ namespace DB91
             catch (Exception)
             {
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            txtConnStr.ReadOnly = false;
+            txtCatalog.ReadOnly = false;
+            tvFuncionesOrigen.Nodes.Clear();
+            tvFuncionesDestino.Nodes.Clear();
+            tvStoredDestino.Nodes.Clear();
+            tvStoredOrigen.Nodes.Clear();
+            tvTablasDestino.Nodes.Clear();
+            tvTablasOrigen.Nodes.Clear();
+            tvVistasDestino.Nodes.Clear();
+            tvVistasOrigen.Nodes.Clear();
+
         }
     }
 }

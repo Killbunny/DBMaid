@@ -65,6 +65,9 @@
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.tvFiltroFuncionesDestino = new System.Windows.Forms.TextBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.button10 = new System.Windows.Forms.Button();
             this.TabPanel.SuspendLayout();
             this.tabTablas.SuspendLayout();
             this.tabStoreds.SuspendLayout();
@@ -77,9 +80,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 13);
+            this.label1.Size = new System.Drawing.Size(139, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Cadena de conexion";
+            this.label1.Text = "Cadena de conexion Origen";
             // 
             // tvTablasOrigen
             // 
@@ -87,7 +90,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvTablasOrigen.Location = new System.Drawing.Point(6, 29);
             this.tvTablasOrigen.Name = "tvTablasOrigen";
-            this.tvTablasOrigen.Size = new System.Drawing.Size(250, 322);
+            this.tvTablasOrigen.Size = new System.Drawing.Size(250, 400);
             this.tvTablasOrigen.TabIndex = 1;
             // 
             // tvTablasDestino
@@ -96,7 +99,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvTablasDestino.Location = new System.Drawing.Point(351, 29);
             this.tvTablasDestino.Name = "tvTablasDestino";
-            this.tvTablasDestino.Size = new System.Drawing.Size(250, 322);
+            this.tvTablasDestino.Size = new System.Drawing.Size(250, 400);
             this.tvTablasDestino.TabIndex = 2;
             // 
             // btnAgregarTabla
@@ -155,7 +158,7 @@
             // 
             // txtConnStr
             // 
-            this.txtConnStr.Location = new System.Drawing.Point(120, 6);
+            this.txtConnStr.Location = new System.Drawing.Point(154, 6);
             this.txtConnStr.Name = "txtConnStr";
             this.txtConnStr.Size = new System.Drawing.Size(487, 20);
             this.txtConnStr.TabIndex = 10;
@@ -163,7 +166,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(613, 4);
+            this.button5.Location = new System.Drawing.Point(647, 4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(108, 22);
             this.button5.TabIndex = 11;
@@ -182,7 +185,7 @@
             this.TabPanel.Location = new System.Drawing.Point(12, 55);
             this.TabPanel.Name = "TabPanel";
             this.TabPanel.SelectedIndex = 0;
-            this.TabPanel.Size = new System.Drawing.Size(615, 383);
+            this.TabPanel.Size = new System.Drawing.Size(615, 461);
             this.TabPanel.TabIndex = 12;
             // 
             // tabTablas
@@ -196,7 +199,7 @@
             this.tabTablas.Location = new System.Drawing.Point(4, 22);
             this.tabTablas.Name = "tabTablas";
             this.tabTablas.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTablas.Size = new System.Drawing.Size(607, 357);
+            this.tabTablas.Size = new System.Drawing.Size(607, 435);
             this.tabTablas.TabIndex = 0;
             this.tabTablas.Text = "Tablas";
             this.tabTablas.UseVisualStyleBackColor = true;
@@ -219,7 +222,7 @@
             // 
             // txtCatalog
             // 
-            this.txtCatalog.Location = new System.Drawing.Point(120, 29);
+            this.txtCatalog.Location = new System.Drawing.Point(154, 29);
             this.txtCatalog.Name = "txtCatalog";
             this.txtCatalog.Size = new System.Drawing.Size(487, 20);
             this.txtCatalog.TabIndex = 14;
@@ -242,7 +245,7 @@
             this.txtScriptSQL.Location = new System.Drawing.Point(633, 106);
             this.txtScriptSQL.Name = "txtScriptSQL";
             this.txtScriptSQL.ReadOnly = true;
-            this.txtScriptSQL.Size = new System.Drawing.Size(335, 328);
+            this.txtScriptSQL.Size = new System.Drawing.Size(571, 406);
             this.txtScriptSQL.TabIndex = 15;
             this.txtScriptSQL.Text = "";
             this.txtScriptSQL.WordWrap = false;
@@ -435,11 +438,41 @@
             this.tvFiltroFuncionesDestino.Size = new System.Drawing.Size(250, 20);
             this.tvFiltroFuncionesDestino.TabIndex = 20;
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(778, 52);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(426, 20);
+            this.textBox1.TabIndex = 17;
+            this.textBox1.Text = "Data Source=.\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(633, 55);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(144, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Cadena de conexion Destino";
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(647, 29);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(108, 22);
+            this.button10.TabIndex = 18;
+            this.button10.Text = "Desconectar";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(980, 450);
+            this.ClientSize = new System.Drawing.Size(1216, 528);
+            this.Controls.Add(this.button10);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.txtScriptSQL);
             this.Controls.Add(this.txtCatalog);
             this.Controls.Add(this.label2);
@@ -451,6 +484,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.TabPanel.ResumeLayout(false);
             this.tabTablas.ResumeLayout(false);
             this.tabTablas.PerformLayout();
@@ -504,6 +538,9 @@
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.TextBox tvFiltroFuncionesDestino;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button10;
     }
 }
 
