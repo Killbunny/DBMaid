@@ -12,6 +12,11 @@ using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Smo.Wmi;
 using System.Data.Sql;
+using Microsoft.Win32;
+using Newtonsoft.Json;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using DB91.ExtensionMethods;
 
 namespace DB91
 {
@@ -198,6 +203,8 @@ namespace DB91
 + "select @SQL, @SQL2                                                                                                                                                                      ";
         #endregion
 
+        const string CADENA_CONEXION_LOCAL = "Data Source={instancia};Initial Catalog=master;Integrated Security=True";
+
         TreeView _tvTablasOrigen = new TreeView();
         TreeView _tvStoredOrigen = new TreeView();
         TreeView _tvVistasOrigen = new TreeView();
@@ -310,6 +317,12 @@ namespace DB91
             {
                 var nodo = tvTablasDestino.SelectedNode;
                 tvTablasDestino.Nodes.Remove(nodo);
+                TreeNode _nodo = null;
+                foreach (TreeNode n in _tvTablasDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) { _nodo = n; break; };
+                }
+                if (_nodo != null) _tvTablasDestino.Nodes.Remove(_nodo);
             }
             catch (Exception)
             {
@@ -318,11 +331,27 @@ namespace DB91
 
         private void button2_Click(object sender, EventArgs e)
         {
+            GenerarScript();
+        }
+
+        private void GenerarScript()
+        {
             txtScriptSQL.Text = $"-- CREAR DB \n\n if not exists(select * from sys.databases where name = '{txtCatalog.Text}') create database {txtCatalog.Text} \n GO \n\n USE [{txtCatalog.Text}] \n go \n\n";
 
             txtScriptSQL.AppendText("-- CREAR SCHEMAS\n\n");
-            txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  *  FROM    sys.schemas WHERE   name = N'CRPCTL' )\n EXEC('CREATE SCHEMA [CRPCTL]')\n GO\n");
-            txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  * FROM    sys.schemas WHERE   name = N'CRPDTA' ) \nEXEC('CREATE SCHEMA [CRPDTA]') \nGO\n\n");
+            //txtScriptSQL.AppendText("IF NOT EXISTS ( SELECT  *  FROM    sys.schemas WHERE   name = N'CRPCTL' )\n EXEC('CREATE SCHEMA [CRPCTL]')\n GO\n");
+
+            List<string> listaSchemas = new List<string>();
+            foreach (TreeNode nodo in _tvTablasDestino.Nodes)
+            {
+                listaSchemas.Add(nodo.Text.Split('.')[1]);
+            }
+            listaSchemas = listaSchemas.GroupBy(x => x).Select(x => x.First()).ToList();
+            listaSchemas.ForEach(sch =>
+            {
+                txtScriptSQL.AppendText($"IF NOT EXISTS ( SELECT  * FROM    sys.schemas WHERE   name = N'{sch}' ) \nEXEC('CREATE SCHEMA [{sch}]') \nGO\n\n");
+            });
+
             string connetionString = null;
             SqlConnection cnn;
             connetionString = txtConnStr.Text;
@@ -422,17 +451,12 @@ namespace DB91
                 btnEjecutarScript.Enabled = true;
                 btnBulkCopy.Enabled = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw;
             }
         }
-
-
-
-
-
 
         private void button4_Click(object sender, EventArgs e)
         {
@@ -457,6 +481,12 @@ namespace DB91
             {
                 var nodo = tvStoredDestino.SelectedNode;
                 tvStoredDestino.Nodes.Remove(nodo);
+                TreeNode _nodo = null;
+                foreach (TreeNode n in _tvStoredDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) { _nodo = n; break; };
+                }
+                if (_nodo != null) _tvStoredDestino.Nodes.Remove(_nodo);
             }
             catch (Exception)
             {
@@ -487,6 +517,12 @@ namespace DB91
             {
                 var nodo = tvVistasDestino.SelectedNode;
                 tvVistasDestino.Nodes.Remove(nodo);
+                TreeNode _nodo = null;
+                foreach (TreeNode n in _tvVistasDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) { _nodo = n; break; };
+                }
+                if (_nodo != null) _tvVistasDestino.Nodes.Remove(_nodo);
             }
             catch (Exception)
             {
@@ -516,6 +552,12 @@ namespace DB91
             {
                 var nodo = tvFuncionesDestino.SelectedNode;
                 tvFuncionesDestino.Nodes.Remove(nodo);
+                TreeNode _nodo = null;
+                foreach (TreeNode n in _tvFuncionesDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) { _nodo = n; break; };
+                }
+                if (_nodo != null) _tvFuncionesDestino.Nodes.Remove(_nodo);
             }
             catch (Exception)
             {
@@ -526,50 +568,33 @@ namespace DB91
         {
             try
             {
-                //cbDBsLocales.Items.Clear();
-                //SqlDataSourceEnumerator instance2 = SqlDataSourceEnumerator.Instance;
-                //System.Data.DataTable table2 = instance2.GetDataSources();
-                //foreach (System.Data.DataRow row in table2.Rows)
-                //{
-                //    //if (row["ServerName"] != DBNull.Value && Environment.MachineName.Equals(row["ServerName"].ToString()))
-                //    //{
-                //    string item = string.Empty;
-                //    item = row["ServerName"].ToString();
-                //    if (row["InstanceName"] != DBNull.Value || !string.IsNullOrEmpty(Convert.ToString(row["InstanceName"]).Trim()))
-                //    {
-                //        item += @"\" + Convert.ToString(row["InstanceName"]).Trim();
-                //    }
-                //    cbDBsLocales.Items.Add(item);
-                //    //}
-                //}
+
+                ToolTip tooltip = new ToolTip();
+                tooltip.SetToolTip(lbHelpBulk, "Es necesario que la tabla exista en la DB destino.");
 
 
-                //using (DataTable sqlSources = SqlDataSourceEnumerator.Instance.GetDataSources())
-                //{
-                //    foreach (DataRow source in sqlSources.Rows)
-                //    {
-                //        string servername;
-                //        string instanceName = source["InstanceName"].ToString();
+                var registryViewArray = new[] { RegistryView.Registry32, RegistryView.Registry64 };
 
-                //        if (!string.IsNullOrEmpty(instanceName))
-                //        {
-                //            servername = source["InstanceName"] + "\\" + source["ServerName"];
-                //        }
-                //        else
-                //        {
-                //            servername = source["ServerName"].ToString();
-                //        }
-                //        Console.WriteLine(" Server Name:{0}", servername);
-                //        Console.WriteLine("     Version:{0}", source["Version"]);
-                //        Console.WriteLine();
-                //        cbDBsLocales.Items.Add(servername);
+                foreach (var registryView in registryViewArray)
+                {
+                    using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, registryView))
+                    using (var key = hklm.OpenSubKey(@"SOFTWARE\Microsoft\Microsoft SQL Server"))
+                    {
+                        var instances = (string[])key?.GetValue("InstalledInstances");
+                        if (instances != null)
+                        {
+                            foreach (var element in instances)
+                            {
+                                if (element == "MSSQLSERVER")
+                                    cbDBsLocales.Items.Add(System.Environment.MachineName);
+                                else
+                                    cbDBsLocales.Items.Add(System.Environment.MachineName + @"\" + element);
 
-                //    }
-                //    //Console.ReadKey();
-                //}
-
-
-
+                            }
+                        }
+                    }
+                }
+                cbDBsLocales.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -802,6 +827,11 @@ namespace DB91
 
         private void button11_Click(object sender, EventArgs e)
         {
+            GuardarScript();
+        }
+
+        private void GuardarScript()
+        {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Title = "Guardar sql";
             saveFileDialog1.DefaultExt = "sql";
@@ -816,26 +846,36 @@ namespace DB91
 
         private void btnEjecutarScript_Click(object sender, EventArgs e)
         {
+            EjecutarScript();
+        }
+
+        private void EjecutarScript()
+        {
             string connetionString = null;
             SqlConnection cnn;
-            connetionString = txtConStrDestino.Text;
+            connetionString = CADENA_CONEXION_LOCAL.Replace("{instancia}", cbDBsLocales.Text);
             try
             {
                 string script = txtScriptSQL.Text;
                 SqlConnection conn = new SqlConnection(connetionString);
                 Server server = new Server(new ServerConnection(conn));
                 server.ConnectionContext.ExecuteNonQuery(script);
-                MessageBox.Show("Script ejecutado uwu");
+                MessageBox.Show("Script ejecutado");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Algo salió mal :( \n" + ex.Message);
+                MessageBox.Show("Algo salió mal\n" + ex.Message);
             }
         }
 
         private void btnBulkCopy_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Se inició el Bulk Copy. \nLa pantalla puede dejar de responder :v dale tiempo");
+            BulkCopy();
+        }
+
+        private void BulkCopy()
+        {
+            MessageBox.Show("Se inició el Bulk Copy. \nLa pantalla puede dejar de responder.");
             try
             {
                 foreach (TreeNode nodo in _tvTablasDestino.Nodes)
@@ -845,20 +885,20 @@ namespace DB91
                     // Create source connection
                     SqlConnection source = new SqlConnection(txtConnStr.Text);
                     // Create destination connection
-                    SqlConnection destination = new SqlConnection(txtConStrDestino.Text);
+                    SqlConnection destination = new SqlConnection(CADENA_CONEXION_LOCAL.Replace("{instancia}", cbDBsLocales.Text));
 
                     // Clean up destination table. Your destination database must have the
                     // table with schema which you are copying data to.
                     // Before executing this code, you must create a table BulkDataTable
                     // in your database where you are trying to copy data to.
 
-                    SqlCommand cmd = new SqlCommand("DELETE FROM "+Tabla, destination);
+                    SqlCommand cmd = new SqlCommand("DELETE FROM " + Tabla, destination);
                     // Open source and destination connections.
                     source.Open();
                     destination.Open();
                     cmd.ExecuteNonQuery();
                     // Select data from Products table
-                    cmd = new SqlCommand("SELECT * FROM "+Tabla, source);
+                    cmd = new SqlCommand("SELECT * FROM " + Tabla, source);
                     // Execute reader
                     SqlDataReader reader = cmd.ExecuteReader();
                     // Create SqlBulkCopy
@@ -871,13 +911,171 @@ namespace DB91
                     bulkData.Close();
                     destination.Close();
                     source.Close();
-                    MessageBox.Show("Bulk Copy terminado uwu");
+
                 }
+                MessageBox.Show("Bulk Copy terminado");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Algo salió mal\n"+ex.Message);
+                MessageBox.Show("Algo salió mal\n" + ex.Message);
             }
+        }
+
+        private void txtScriptSQL_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            GenerarScript();
+            if (ckMostrar.Checked) txtScriptSQL.Visible = true;
+            if (ckGuardar.Checked) GuardarScript();
+            if (ckEjecutar.Checked) EjecutarScript();
+            if (ckBulkCopy.Checked) BulkCopy();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Ambiente ambiente = new Ambiente();
+            ambiente.ckBulkCopy = ckBulkCopy.Checked;
+            ambiente.ckEjecutar = ckEjecutar.Checked;
+            ambiente.ckGuardar = ckGuardar.Checked;
+            ambiente.ckMostrar = ckMostrar.Checked;
+
+            ambiente.tvFuncionesDestino = _tvFuncionesDestino.Nodes.ToNodeNameList();
+            ambiente.tvStoredDestino = _tvStoredDestino.Nodes.ToNodeNameList();
+            ambiente.tvTablasDestino = _tvTablasDestino.Nodes.ToNodeNameList();
+            ambiente.tvVistasDestino = _tvVistasDestino.Nodes.ToNodeNameList();
+
+            ambiente.Catalog = txtCatalog.Text;
+            ambiente.Conn = txtConnStr.Text;
+
+            var jsonSalida = JsonConvert.SerializeObject(ambiente);
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Title = "Guardar ambiente";
+            saveFileDialog1.DefaultExt = "json";
+            saveFileDialog1.Filter = "JSON (*.json)|*.json|All files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 1;
+            saveFileDialog1.RestoreDirectory = true;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                System.IO.File.WriteAllText(saveFileDialog1.FileName, jsonSalida);
+            }
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+
+            int size = -1;
+            openFileDialog1.DefaultExt = ".json";
+            openFileDialog1.Filter = "JSON (.json)|*.json";
+            DialogResult result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                string file = openFileDialog1.FileName;
+                try
+                {
+                    string ambientejson = File.ReadAllText(file);
+                    Ambiente ambiente = JsonConvert.DeserializeObject<Ambiente>(ambientejson);
+
+
+                    #region Limpiar todos los Nodos
+                    _tvTablasOrigen.Nodes.Clear();
+                    _tvStoredOrigen.Nodes.Clear();
+                    _tvVistasOrigen.Nodes.Clear();
+                    _tvFuncionesOrigen.Nodes.Clear();
+
+                    _tvTablasDestino.Nodes.Clear();
+                    _tvStoredDestino.Nodes.Clear();
+                    _tvVistasDestino.Nodes.Clear();
+                    _tvFuncionesDestino.Nodes.Clear();
+
+                    tvTablasOrigen.Nodes.Clear();
+                    tvStoredOrigen.Nodes.Clear();
+                    tvVistasOrigen.Nodes.Clear();
+                    tvFuncionesOrigen.Nodes.Clear();
+
+                    tvTablasDestino.Nodes.Clear();
+                    tvStoredDestino.Nodes.Clear();
+                    tvVistasDestino.Nodes.Clear();
+                    tvFuncionesDestino.Nodes.Clear();
+                    #endregion;
+
+                    foreach (string s in ambiente.tvFuncionesDestino)
+                    {
+                        TreeNode n = new TreeNode(s);
+                        _tvFuncionesDestino.Nodes.Add((TreeNode)n.Clone());
+                        tvFuncionesDestino.Nodes.Add((TreeNode)n.Clone());
+                    }
+
+                    foreach (string s in ambiente.tvTablasDestino)
+                    {
+                        TreeNode n = new TreeNode(s);
+                        _tvTablasDestino.Nodes.Add((TreeNode)n.Clone());
+                        tvTablasDestino.Nodes.Add((TreeNode)n.Clone());
+                    }
+
+                    foreach (string s in ambiente.tvVistasDestino)
+                    {
+                        TreeNode n = new TreeNode(s);
+                        _tvVistasDestino.Nodes.Add((TreeNode)n.Clone());
+                        tvVistasDestino.Nodes.Add((TreeNode)n.Clone());
+                    }
+
+                    foreach (string s in ambiente.tvStoredDestino)
+                    {
+                        TreeNode n = new TreeNode(s);
+                        _tvStoredDestino.Nodes.Add((TreeNode)n.Clone());
+                        tvStoredDestino.Nodes.Add((TreeNode)n.Clone());
+                    }
+
+                    ckBulkCopy.Checked = ambiente.ckBulkCopy;
+                    ckEjecutar.Checked = ambiente.ckEjecutar;
+                    ckGuardar.Checked = ambiente.ckGuardar;
+                    ckMostrar.Checked = ambiente.ckMostrar;
+
+                    txtConnStr.Text = ambiente.Conn;
+                    txtCatalog.Text = ambiente.Catalog;
+
+                    button5_Click(null, null);
+                }
+                catch (Exception ex)
+                {
+                    var a = 1 + 1;
+                }
+            }
+
+
+        }
+
+
+    }
+    namespace ExtensionMethods
+    {
+        public static class MyExtensions
+        {
+
+            public static List<TreeNode> ToList(this TreeNodeCollection nodos)
+            {
+                List<TreeNode> lst = new List<TreeNode>();
+                foreach (TreeNode nodo in nodos)
+                {
+                    lst.Add(nodo);
+                }
+                return lst;
+            }
+
+            public static List<string> ToNodeNameList(this TreeNodeCollection nodos)
+            {
+                List<string> lst = new List<string>();
+                foreach (TreeNode nodo in nodos)
+                {
+                    lst.Add(nodo.Text);
+                }
+                return lst;
+            }
+
         }
     }
 }
