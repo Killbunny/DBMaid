@@ -22,7 +22,7 @@ WHERE pr.Is_MS_Shipped = 0 AND pr.name LIKE '%_nuevo_numero_de_folio'
 select * from sys.sql_modules
 
 SELECT OBJECT_DEFINITION (OBJECT_ID(N'CRPDTA.sp_nuevo_numero_de_folio'));
-sp_helptext 'dbo.jdeToDate'
+--sp_helptext 'dbo.jdeToDate'
 
  SELECT      
         replace(mod.definition,pr.name,pr.name) 

@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Data.SqlClient;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Smo.Wmi;
+using System.Data.Sql;
 
 namespace DB91
 {
@@ -521,7 +523,57 @@ namespace DB91
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            try
+            {
+                //cbDBsLocales.Items.Clear();
+                //SqlDataSourceEnumerator instance2 = SqlDataSourceEnumerator.Instance;
+                //System.Data.DataTable table2 = instance2.GetDataSources();
+                //foreach (System.Data.DataRow row in table2.Rows)
+                //{
+                //    //if (row["ServerName"] != DBNull.Value && Environment.MachineName.Equals(row["ServerName"].ToString()))
+                //    //{
+                //    string item = string.Empty;
+                //    item = row["ServerName"].ToString();
+                //    if (row["InstanceName"] != DBNull.Value || !string.IsNullOrEmpty(Convert.ToString(row["InstanceName"]).Trim()))
+                //    {
+                //        item += @"\" + Convert.ToString(row["InstanceName"]).Trim();
+                //    }
+                //    cbDBsLocales.Items.Add(item);
+                //    //}
+                //}
 
+
+                //using (DataTable sqlSources = SqlDataSourceEnumerator.Instance.GetDataSources())
+                //{
+                //    foreach (DataRow source in sqlSources.Rows)
+                //    {
+                //        string servername;
+                //        string instanceName = source["InstanceName"].ToString();
+
+                //        if (!string.IsNullOrEmpty(instanceName))
+                //        {
+                //            servername = source["InstanceName"] + "\\" + source["ServerName"];
+                //        }
+                //        else
+                //        {
+                //            servername = source["ServerName"].ToString();
+                //        }
+                //        Console.WriteLine(" Server Name:{0}", servername);
+                //        Console.WriteLine("     Version:{0}", source["Version"]);
+                //        Console.WriteLine();
+                //        cbDBsLocales.Items.Add(servername);
+
+                //    }
+                //    //Console.ReadKey();
+                //}
+
+
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         private void button10_Click(object sender, EventArgs e)
@@ -749,7 +801,7 @@ namespace DB91
 
         private void button11_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();   
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Title = "Guardar sql";
             saveFileDialog1.DefaultExt = "sql";
             saveFileDialog1.Filter = "Script SQL (*.sql)|*.sql|All files (*.*)|*.*";
@@ -772,10 +824,11 @@ namespace DB91
                 SqlConnection conn = new SqlConnection(connetionString);
                 Server server = new Server(new ServerConnection(conn));
                 server.ConnectionContext.ExecuteNonQuery(script);
+                MessageBox.Show("Script ejecutado uwu");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Algo salió mal :( \n"+ex.Message);
+                MessageBox.Show("Algo salió mal :( \n" + ex.Message);
             }
         }
     }

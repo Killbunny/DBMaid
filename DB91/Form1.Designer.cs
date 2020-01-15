@@ -38,7 +38,7 @@
             this.btnEjecutarScript = new System.Windows.Forms.Button();
             this.btnQuitarTabla = new System.Windows.Forms.Button();
             this.txtConnStr = new System.Windows.Forms.TextBox();
-            this.button5 = new System.Windows.Forms.Button();
+            this.btnConectarYBuscar = new System.Windows.Forms.Button();
             this.TabPanel = new System.Windows.Forms.TabControl();
             this.tabTablas = new System.Windows.Forms.TabPage();
             this.tabStoreds = new System.Windows.Forms.TabPage();
@@ -67,8 +67,9 @@
             this.txtScriptSQL = new System.Windows.Forms.RichTextBox();
             this.txtConStrDestino = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.button10 = new System.Windows.Forms.Button();
+            this.btnDesconectar = new System.Windows.Forms.Button();
             this.btnGuardarScript = new System.Windows.Forms.Button();
+            this.cbDBsLocales = new System.Windows.Forms.ComboBox();
             this.TabPanel.SuspendLayout();
             this.tabTablas.SuspendLayout();
             this.tabStoreds.SuspendLayout();
@@ -168,15 +169,15 @@
             this.txtConnStr.TabIndex = 10;
             this.txtConnStr.Text = "Server=192.168.0.215;Database=JDE_CRP;User Id=CRPDTA;Password=CRPDTA;";
             // 
-            // button5
+            // btnConectarYBuscar
             // 
-            this.button5.Location = new System.Drawing.Point(647, 4);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(108, 22);
-            this.button5.TabIndex = 11;
-            this.button5.Text = "Conectar y Buscar";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.btnConectarYBuscar.Location = new System.Drawing.Point(647, 4);
+            this.btnConectarYBuscar.Name = "btnConectarYBuscar";
+            this.btnConectarYBuscar.Size = new System.Drawing.Size(108, 22);
+            this.btnConectarYBuscar.TabIndex = 11;
+            this.btnConectarYBuscar.Text = "Conectar y Buscar";
+            this.btnConectarYBuscar.UseVisualStyleBackColor = true;
+            this.btnConectarYBuscar.Click += new System.EventHandler(this.button5_Click);
             // 
             // TabPanel
             // 
@@ -194,6 +195,7 @@
             // 
             // tabTablas
             // 
+            this.tabTablas.BackColor = System.Drawing.SystemColors.Control;
             this.tabTablas.Controls.Add(this.txtFiltroTablasOrigen);
             this.tabTablas.Controls.Add(this.tvTablasOrigen);
             this.tabTablas.Controls.Add(this.tvTablasDestino);
@@ -206,10 +208,10 @@
             this.tabTablas.Size = new System.Drawing.Size(607, 435);
             this.tabTablas.TabIndex = 0;
             this.tabTablas.Text = "Tablas";
-            this.tabTablas.UseVisualStyleBackColor = true;
             // 
             // tabStoreds
             // 
+            this.tabStoreds.BackColor = System.Drawing.SystemColors.Control;
             this.tabStoreds.Controls.Add(this.txtFiltroStoredOrigen);
             this.tabStoreds.Controls.Add(this.tvStoredOrigen);
             this.tabStoreds.Controls.Add(this.tvStoredDestino);
@@ -222,7 +224,6 @@
             this.tabStoreds.Size = new System.Drawing.Size(607, 435);
             this.tabStoreds.TabIndex = 1;
             this.tabStoreds.Text = "Stored Procedures";
-            this.tabStoreds.UseVisualStyleBackColor = true;
             // 
             // txtFiltroStoredOrigen
             // 
@@ -280,6 +281,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage1.Controls.Add(this.txtFiltroVistasOrigen);
             this.tabPage1.Controls.Add(this.tvVistasOrigen);
             this.tabPage1.Controls.Add(this.tvVistasDestino);
@@ -292,7 +294,6 @@
             this.tabPage1.Size = new System.Drawing.Size(607, 435);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Vistas";
-            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // txtFiltroVistasOrigen
             // 
@@ -350,6 +351,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage2.Controls.Add(this.txtFiltroFuncionesOrigen);
             this.tabPage2.Controls.Add(this.tvFuncionesOrigen);
             this.tabPage2.Controls.Add(this.tvFuncionesDestino);
@@ -362,7 +364,6 @@
             this.tabPage2.Size = new System.Drawing.Size(607, 435);
             this.tabPage2.TabIndex = 3;
             this.tabPage2.Text = "Funciones";
-            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // txtFiltroFuncionesOrigen
             // 
@@ -450,8 +451,9 @@
             // 
             // txtConStrDestino
             // 
-            this.txtConStrDestino.Location = new System.Drawing.Point(778, 52);
+            this.txtConStrDestino.Location = new System.Drawing.Point(759, 52);
             this.txtConStrDestino.Name = "txtConStrDestino";
+            this.txtConStrDestino.ReadOnly = true;
             this.txtConStrDestino.Size = new System.Drawing.Size(426, 20);
             this.txtConStrDestino.TabIndex = 17;
             this.txtConStrDestino.Text = "Data Source=.\\SQLEXPRESS;Initial Catalog=master;Integrated Security=True";
@@ -459,21 +461,21 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(633, 55);
+            this.label3.Location = new System.Drawing.Point(667, 55);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(144, 13);
+            this.label3.Size = new System.Drawing.Size(88, 13);
             this.label3.TabIndex = 16;
-            this.label3.Text = "Cadena de conexion Destino";
+            this.label3.Text = "DB Local destino";
             // 
-            // button10
+            // btnDesconectar
             // 
-            this.button10.Location = new System.Drawing.Point(647, 29);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(108, 22);
-            this.button10.TabIndex = 18;
-            this.button10.Text = "Desconectar";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
+            this.btnDesconectar.Location = new System.Drawing.Point(647, 29);
+            this.btnDesconectar.Name = "btnDesconectar";
+            this.btnDesconectar.Size = new System.Drawing.Size(108, 22);
+            this.btnDesconectar.TabIndex = 18;
+            this.btnDesconectar.Text = "Desconectar";
+            this.btnDesconectar.UseVisualStyleBackColor = true;
+            this.btnDesconectar.Click += new System.EventHandler(this.button10_Click);
             // 
             // btnGuardarScript
             // 
@@ -486,20 +488,30 @@
             this.btnGuardarScript.UseVisualStyleBackColor = true;
             this.btnGuardarScript.Click += new System.EventHandler(this.button11_Click);
             // 
+            // cbDBsLocales
+            // 
+            this.cbDBsLocales.FormattingEnabled = true;
+            this.cbDBsLocales.Location = new System.Drawing.Point(761, 6);
+            this.cbDBsLocales.Name = "cbDBsLocales";
+            this.cbDBsLocales.Size = new System.Drawing.Size(216, 21);
+            this.cbDBsLocales.TabIndex = 22;
+            this.cbDBsLocales.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1216, 528);
+            this.Controls.Add(this.cbDBsLocales);
             this.Controls.Add(this.btnGuardarScript);
-            this.Controls.Add(this.button10);
+            this.Controls.Add(this.btnDesconectar);
             this.Controls.Add(this.txtConStrDestino);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtScriptSQL);
             this.Controls.Add(this.txtCatalog);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.TabPanel);
-            this.Controls.Add(this.button5);
+            this.Controls.Add(this.btnConectarYBuscar);
             this.Controls.Add(this.txtConnStr);
             this.Controls.Add(this.btnEjecutarScript);
             this.Controls.Add(this.btnGenerarScript);
@@ -533,7 +545,7 @@
         private System.Windows.Forms.Button btnEjecutarScript;
         private System.Windows.Forms.Button btnQuitarTabla;
         private System.Windows.Forms.TextBox txtConnStr;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button btnConectarYBuscar;
         private System.Windows.Forms.TabControl TabPanel;
         private System.Windows.Forms.TabPage tabTablas;
         private System.Windows.Forms.TabPage tabStoreds;
@@ -562,8 +574,9 @@
         private System.Windows.Forms.TextBox txtFiltroFuncionesDestino;
         private System.Windows.Forms.TextBox txtConStrDestino;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Button btnDesconectar;
         private System.Windows.Forms.Button btnGuardarScript;
+        private System.Windows.Forms.ComboBox cbDBsLocales;
     }
 }
 
