@@ -420,6 +420,7 @@ namespace DB91
 
                 btnGuardarScript.Enabled = true;
                 btnEjecutarScript.Enabled = true;
+                btnBulkCopy.Enabled = true;
             }
             catch (Exception)
             {
@@ -829,6 +830,53 @@ namespace DB91
             catch (Exception ex)
             {
                 MessageBox.Show("Algo salió mal :( \n" + ex.Message);
+            }
+        }
+
+        private void btnBulkCopy_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Se inició el Bulk Copy. \nLa pantalla puede dejar de responder :v dale tiempo");
+            try
+            {
+                foreach (TreeNode nodo in _tvTablasDestino.Nodes)
+                {
+                    var partes = nodo.Text.Split('.');
+                    string Tabla = partes[0] + "." + partes[1] + "." + partes[2];
+                    // Create source connection
+                    SqlConnection source = new SqlConnection(txtConnStr.Text);
+                    // Create destination connection
+                    SqlConnection destination = new SqlConnection(txtConStrDestino.Text);
+
+                    // Clean up destination table. Your destination database must have the
+                    // table with schema which you are copying data to.
+                    // Before executing this code, you must create a table BulkDataTable
+                    // in your database where you are trying to copy data to.
+
+                    SqlCommand cmd = new SqlCommand("DELETE FROM "+Tabla, destination);
+                    // Open source and destination connections.
+                    source.Open();
+                    destination.Open();
+                    cmd.ExecuteNonQuery();
+                    // Select data from Products table
+                    cmd = new SqlCommand("SELECT * FROM "+Tabla, source);
+                    // Execute reader
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    // Create SqlBulkCopy
+                    SqlBulkCopy bulkData = new SqlBulkCopy(destination);
+                    // Set destination table name
+                    bulkData.DestinationTableName = Tabla;
+                    // Write data
+                    bulkData.WriteToServer(reader);
+                    // Close objects
+                    bulkData.Close();
+                    destination.Close();
+                    source.Close();
+                    MessageBox.Show("Bulk Copy terminado uwu");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Algo salió mal\n"+ex.Message);
             }
         }
     }

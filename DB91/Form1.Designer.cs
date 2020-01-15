@@ -70,6 +70,7 @@
             this.btnDesconectar = new System.Windows.Forms.Button();
             this.btnGuardarScript = new System.Windows.Forms.Button();
             this.cbDBsLocales = new System.Windows.Forms.ComboBox();
+            this.btnBulkCopy = new System.Windows.Forms.Button();
             this.TabPanel.SuspendLayout();
             this.tabTablas.SuspendLayout();
             this.tabStoreds.SuspendLayout();
@@ -451,7 +452,7 @@
             // 
             // txtConStrDestino
             // 
-            this.txtConStrDestino.Location = new System.Drawing.Point(759, 52);
+            this.txtConStrDestino.Location = new System.Drawing.Point(853, 6);
             this.txtConStrDestino.Name = "txtConStrDestino";
             this.txtConStrDestino.ReadOnly = true;
             this.txtConStrDestino.Size = new System.Drawing.Size(426, 20);
@@ -461,7 +462,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(667, 55);
+            this.label3.Location = new System.Drawing.Point(761, 9);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(88, 13);
             this.label3.TabIndex = 16;
@@ -491,17 +492,29 @@
             // cbDBsLocales
             // 
             this.cbDBsLocales.FormattingEnabled = true;
-            this.cbDBsLocales.Location = new System.Drawing.Point(761, 6);
+            this.cbDBsLocales.Location = new System.Drawing.Point(761, 31);
             this.cbDBsLocales.Name = "cbDBsLocales";
             this.cbDBsLocales.Size = new System.Drawing.Size(216, 21);
             this.cbDBsLocales.TabIndex = 22;
             this.cbDBsLocales.Visible = false;
+            // 
+            // btnBulkCopy
+            // 
+            this.btnBulkCopy.Enabled = false;
+            this.btnBulkCopy.Location = new System.Drawing.Point(1000, 77);
+            this.btnBulkCopy.Name = "btnBulkCopy";
+            this.btnBulkCopy.Size = new System.Drawing.Size(120, 23);
+            this.btnBulkCopy.TabIndex = 23;
+            this.btnBulkCopy.Text = "Bulk Copy de tablas";
+            this.btnBulkCopy.UseVisualStyleBackColor = true;
+            this.btnBulkCopy.Click += new System.EventHandler(this.btnBulkCopy_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1216, 528);
+            this.Controls.Add(this.btnBulkCopy);
             this.Controls.Add(this.cbDBsLocales);
             this.Controls.Add(this.btnGuardarScript);
             this.Controls.Add(this.btnDesconectar);
@@ -577,6 +590,7 @@
         private System.Windows.Forms.Button btnDesconectar;
         private System.Windows.Forms.Button btnGuardarScript;
         private System.Windows.Forms.ComboBox cbDBsLocales;
+        private System.Windows.Forms.Button btnBulkCopy;
     }
 }
 
