@@ -110,6 +110,8 @@
             this.tvTablasOrigen.Name = "tvTablasOrigen";
             this.tvTablasOrigen.Size = new System.Drawing.Size(250, 400);
             this.tvTablasOrigen.TabIndex = 1;
+            this.tvTablasOrigen.Click += new System.EventHandler(this.tvTablasOrigen_Click);
+            this.tvTablasOrigen.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tvTablasOrigen_MouseDoubleClick);
             // 
             // tvTablasDestino
             // 
@@ -184,7 +186,7 @@
             this.txtConnStr.Location = new System.Drawing.Point(154, 6);
             this.txtConnStr.Name = "txtConnStr";
             this.txtConnStr.Size = new System.Drawing.Size(487, 20);
-            this.txtConnStr.TabIndex = 10;
+            this.txtConnStr.TabIndex = 0;
             this.txtConnStr.Text = "Server=192.168.0.215;Database=JDE_CRP;User Id=CRPDTA;Password=CRPDTA;";
             // 
             // btnConectarYBuscar
@@ -209,7 +211,7 @@
             this.TabPanel.Name = "TabPanel";
             this.TabPanel.SelectedIndex = 0;
             this.TabPanel.Size = new System.Drawing.Size(615, 461);
-            this.TabPanel.TabIndex = 12;
+            this.TabPanel.TabIndex = 2;
             // 
             // tabTablas
             // 
@@ -442,7 +444,7 @@
             this.txtCatalog.Location = new System.Drawing.Point(154, 29);
             this.txtCatalog.Name = "txtCatalog";
             this.txtCatalog.Size = new System.Drawing.Size(487, 20);
-            this.txtCatalog.TabIndex = 14;
+            this.txtCatalog.TabIndex = 1;
             this.txtCatalog.Text = "JDE_CRP";
             // 
             // label2
@@ -459,10 +461,10 @@
             this.txtScriptSQL.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtScriptSQL.Location = new System.Drawing.Point(3, 6);
+            this.txtScriptSQL.Location = new System.Drawing.Point(6, 5);
             this.txtScriptSQL.Name = "txtScriptSQL";
             this.txtScriptSQL.ReadOnly = true;
-            this.txtScriptSQL.Size = new System.Drawing.Size(564, 430);
+            this.txtScriptSQL.Size = new System.Drawing.Size(380, 430);
             this.txtScriptSQL.TabIndex = 15;
             this.txtScriptSQL.Text = "";
             this.txtScriptSQL.Visible = false;
@@ -507,7 +509,7 @@
             this.cbDBsLocales.Location = new System.Drawing.Point(147, 10);
             this.cbDBsLocales.Name = "cbDBsLocales";
             this.cbDBsLocales.Size = new System.Drawing.Size(216, 21);
-            this.cbDBsLocales.TabIndex = 22;
+            this.cbDBsLocales.TabIndex = 1;
             // 
             // btnBulkCopy
             // 
@@ -572,7 +574,7 @@
             this.button2.Location = new System.Drawing.Point(10, 37);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(120, 23);
-            this.button2.TabIndex = 25;
+            this.button2.TabIndex = 0;
             this.button2.Text = "Iniciar";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click_1);
@@ -619,7 +621,7 @@
             this.button5.Location = new System.Drawing.Point(261, 37);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(108, 23);
-            this.button5.TabIndex = 28;
+            this.button5.TabIndex = 3;
             this.button5.Text = "Cargar ambiente";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click_1);
@@ -640,7 +642,7 @@
             this.button3.Location = new System.Drawing.Point(147, 37);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(108, 23);
-            this.button3.TabIndex = 27;
+            this.button3.TabIndex = 2;
             this.button3.Text = "Guardar ambiente";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
@@ -652,7 +654,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(563, 435);
+            this.tabPage4.Size = new System.Drawing.Size(392, 435);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Resultado";
             // 

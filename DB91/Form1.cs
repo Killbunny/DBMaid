@@ -361,6 +361,9 @@ namespace DB91
             {
                 cnn.Open();
                 #region Tablas
+                //Se usa string builder xq las cadenas son inmutables y no quiero que esto use GBs de ram XD
+                StringBuilder sb = new StringBuilder();
+                sb.Append("");
                 txtScriptSQL.AppendText("-- CREAR TABLAS\n\n");
                 foreach (TreeNode nodo in _tvTablasDestino.Nodes)
                 {
@@ -374,12 +377,15 @@ namespace DB91
                     while (dataReader.Read())
                     {
                         txtScriptSQL.AppendText(dataReader.GetString(0));
-                        txtScriptSQL.AppendText(dataReader.GetString(1));
+                        sb.Append(dataReader.GetString(1));
                     }
                     txtScriptSQL.AppendText("GO\n");
                     dataReader.Close();
                     command.Dispose();
                 }
+                txtScriptSQL.AppendText("--CREAR CONSTRAINTS \n\n");
+                txtScriptSQL.AppendText(sb.ToString());
+                txtScriptSQL.AppendText("GO\n");
                 #endregion
 
                 #region stored procedures
@@ -613,7 +619,7 @@ namespace DB91
                 "Los Simpson murieron en la temporada 8",
                 "0.7% SSR Drop chance",
                 "Xiaomi es la mejor relación calidad-precio",
-                "SEKAI DE ICHIBAN OHIMESAMA",
+                "SEKAI DE ICHIBAN OHIME-SAMA",
                 "PVG 2 algún día será una realidad",
                 "Ya me quiero ir"
             };
@@ -903,28 +909,18 @@ namespace DB91
                 {
                     var partes = nodo.Text.Split('.');
                     string Tabla = partes[0] + "." + partes[1] + "." + partes[2];
-                    // Create source connection
                     SqlConnection source = new SqlConnection(txtConnStr.Text);
-                    // Create destination connection
                     SqlConnection destination = new SqlConnection(CADENA_CONEXION_LOCAL.Replace("{instancia}", cbDBsLocales.Text));
-
-                    // Clean up destination table. Your destination database must have the
-                    // table with schema which you are copying data to.
-                    // Before executing this code, you must create a table BulkDataTable
-                    // in your database where you are trying to copy data to.
-
+                    // Clean up destination table. 
                     SqlCommand cmd = new SqlCommand("DELETE FROM " + Tabla, destination);
-                    // Open source and destination connections.
                     source.Open();
                     destination.Open();
                     cmd.ExecuteNonQuery();
-                    // Select data from Products table
+                    //TODO: Hacer que se pueda poner un where (opcional?) para los datos
                     cmd = new SqlCommand("SELECT * FROM " + Tabla, source);
-                    // Execute reader
                     SqlDataReader reader = cmd.ExecuteReader();
                     // Create SqlBulkCopy
                     SqlBulkCopy bulkData = new SqlBulkCopy(destination);
-                    // Set destination table name
                     bulkData.DestinationTableName = Tabla;
                     // Write data
                     bulkData.WriteToServer(reader);
@@ -1070,7 +1066,27 @@ namespace DB91
 
         }
 
+        private void tvTablasOrigen_Click(object sender, EventArgs e)
+        {
+        }
 
+        private void tvTablasOrigen_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+
+            try
+            {
+                var nodo = tvTablasOrigen.SelectedNode;
+                foreach (TreeNode n in tvTablasDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) return;
+                }
+                tvTablasDestino.Nodes.Add((TreeNode)tvTablasOrigen.SelectedNode.Clone());
+                _tvTablasDestino.Nodes.Add((TreeNode)tvTablasOrigen.SelectedNode.Clone());
+            }
+            catch (Exception)
+            {
+            }
+        }
     }
     namespace ExtensionMethods
     {
