@@ -568,7 +568,7 @@ namespace DB91
         {
             try
             {
-
+                this.Text = "DB Maid: " + ObtenerFlavorText();
                 ToolTip tooltip = new ToolTip();
                 tooltip.SetToolTip(lbHelpBulk, "Es necesario que la tabla exista en la DB destino.");
 
@@ -600,6 +600,27 @@ namespace DB91
             {
                 throw;
             }
+        }
+
+        private string ObtenerFlavorText()
+        {
+            string[] flavorTexts = {
+                "No te metas con la 0911",
+                "Also try Terraria",
+                "git commit -m \"un mensaje descriptivo\"",
+                "Awanten las pruebas en PD",
+                "El sexenio de AMLO termina el 30 de septiembre de 2024",
+                "Los Simpson murieron en la temporada 8",
+                "0.7% SSR Drop chance",
+                "Xiaomi es la mejor relación calidad-precio",
+                "SEKAI DE ICHIBAN OHIMESAMA",
+                "PVG 2 algún día será una realidad",
+                "Ya me quiero ir"
+            };
+            Random random = new Random();
+
+            var i=random.Next(0, flavorTexts.Count());
+            return flavorTexts[i];
         }
 
         private void button10_Click(object sender, EventArgs e)

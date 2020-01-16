@@ -205,9 +205,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="dbmaid %281%29.ico" />
-    <Content Include="dbmaid.ico" />
-    <Content Include="dbmaid64.ico" />
+    <Content Include="dbaburrido.ico" />
     <Content Include="dbmaid_multisize.ico" />
     <Content Include="script generar tablas.sql" />
   </ItemGroup>

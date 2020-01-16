@@ -587,7 +587,7 @@
             this.tabControl1.Location = new System.Drawing.Point(633, 58);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(571, 461);
+            this.tabControl1.Size = new System.Drawing.Size(400, 461);
             this.tabControl1.TabIndex = 25;
             // 
             // tabPage3
@@ -610,7 +610,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(563, 435);
+            this.tabPage3.Size = new System.Drawing.Size(392, 435);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Tareas";
             // 
@@ -664,7 +664,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1216, 528);
+            this.ClientSize = new System.Drawing.Size(1045, 528);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnDesconectar);
             this.Controls.Add(this.txtCatalog);
