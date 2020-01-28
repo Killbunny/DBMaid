@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using DB91.ExtensionMethods;
+using System.Configuration;
+using System.Reflection;
 
 namespace DB91
 {
@@ -221,12 +223,29 @@ namespace DB91
             SqlConnection cnn;
             connetionString = txtConnStr.Text;
             cnn = new SqlConnection(connetionString);
-
-
-
+            var csp = connetionString.Split(';');
             try
             {
                 cnn.Open();
+                if(cnn.State == ConnectionState.Open)
+                {
+                    System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+                    
+                    var csNombre = csp.Where(x => x.ToUpper().Contains("DATA SOURCE")|| x.ToUpper().Contains("SERVER")).Single().Split('=').Where(x=> !(x.ToUpper().Contains("DATA SOURCE") || x.ToUpper().Contains("SERVER"))).Single();
+                    config.AppSettings.Settings.Remove(csNombre);
+                    config.AppSettings.Settings.Add(csNombre, connetionString);
+                    config.Save(ConfigurationSaveMode.Modified);
+                    //config.AppSettings.Settings.Remove("MySetting");
+
+                    txtConnStr.Items.Clear();
+                    config.AppSettings.Settings.AllKeys.ToList().ForEach(key => { txtConnStr.Items.Add(config.AppSettings.Settings[key].Value); });
+                }
+
+                if( txtCatalog.Text== null || txtCatalog.Text.Trim().Equals(""))
+                {
+                    txtCatalog.Text= csp.Where(x => x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE")).Single().Split('=').Where(x => !(x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE"))).Single();
+                }
+                
                 #region Tablas
                 tvTablasOrigen.Nodes.Clear();
                 string queryObtenerTablas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'BASE TABLE'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
@@ -240,7 +259,6 @@ namespace DB91
                 dataReader.Close();
                 command.Dispose();
                 #endregion
-
                 #region Stored procedures
                 tvStoredOrigen.Nodes.Clear();
                 string queryObtenerStored = $"SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'PROCEDURE'  AND  SPECIFIC_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
@@ -254,7 +272,6 @@ namespace DB91
                 dataReader.Close();
                 command.Dispose();
                 #endregion
-
                 #region Vistas
                 tvVistasOrigen.Nodes.Clear();
                 string queryObtenerVistas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'VIEW'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
@@ -268,7 +285,6 @@ namespace DB91
                 dataReader.Close();
                 command.Dispose();
                 #endregion
-
                 #region Funciones
                 tvFuncionesOrigen.Nodes.Clear();
                 string queryObtenerFunciones = $"SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'  AND  SPECIFIC_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
@@ -283,7 +299,7 @@ namespace DB91
                 command.Dispose();
                 #endregion
 
-                txtConnStr.ReadOnly = true;
+                txtConnStr.Enabled = false;
                 txtCatalog.ReadOnly = true;
                 cnn.Close();
             }
@@ -579,6 +595,14 @@ namespace DB91
                 tooltip.SetToolTip(lbHelpBulk, "Es necesario que la tabla exista en la DB destino.");
 
 
+
+
+                System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+                config.AppSettings.Settings.AllKeys.ToList().ForEach(key =>{txtConnStr.Items.Add(config.AppSettings.Settings[key].Value);});
+
+
+                
+
                 var registryViewArray = new[] { RegistryView.Registry32, RegistryView.Registry64 };
 
                 foreach (var registryView in registryViewArray)
@@ -592,7 +616,7 @@ namespace DB91
                             foreach (var element in instances)
                             {
                                 if (element == "MSSQLSERVER")
-                                    cbDBsLocales.Items.Add(System.Environment.MachineName);
+                                    cbDBsLocales.Items.Add(System.Environment.MachineName + " (SQL Server)");
                                 else
                                     cbDBsLocales.Items.Add(System.Environment.MachineName + @"\" + element);
 
@@ -614,14 +638,37 @@ namespace DB91
                 "No te metas con la 0911",
                 "Also try Terraria",
                 "git commit -m \"un mensaje descriptivo\"",
-                "Awanten las pruebas en PD",
+                "Awanten las pruebas en Producción",
                 "El sexenio de AMLO termina el 30 de septiembre de 2024",
                 "Los Simpson murieron en la temporada 8",
                 "0.7% SSR Drop chance",
                 "Xiaomi es la mejor relación calidad-precio",
                 "SEKAI DE ICHIBAN OHIME-SAMA",
                 "PVG 2 algún día será una realidad",
-                "Ya me quiero ir"
+                "Ya me quiero ir",
+                "Rock to the pretty girl rock, rock, rock",
+                "Mamarre",
+                "Pongan bachata",
+                "OMAE WA MOU SHINDEIRU",
+                "NANI!?",
+                "Tu siguiente línea será...",
+                "¿Smash Bros? Mas bien Fire Emblem Fighters",
+                "タイニーリトル・アジアンタム",
+                "Homura did nothing wrong",
+                "https://youtu.be/dQw4w9WgXcQ",
+                "Abby está bien QT uwu",
+                "DORAGON SKEIRU",
+                "🤔",
+                "Hágame el corte de CR7",
+                "Kokoro no junbi OK?",
+                "Fruaido Chicken",
+                "Los periodistas no deberían tener derechos",
+                "Silence Journalis",
+                "My name is Yoshikage Kira. I'm 33 years old. My house is in the northeast section of Morioh, where all the villas are, and I am not married. I work as an employee ...",
+                "Déja Vu! I've just been in this place before",
+                "Me da un peso de cilantro cuanto es?",
+                "DORAGON CRO",
+                "BELLI DURA DESPICIO",
             };
             Random random = new Random();
 
@@ -631,7 +678,7 @@ namespace DB91
 
         private void button10_Click(object sender, EventArgs e)
         {
-            txtConnStr.ReadOnly = false;
+            txtConnStr.Enabled = true;
             txtCatalog.ReadOnly = false;
             tvFuncionesOrigen.Nodes.Clear();
             tvFuncionesDestino.Nodes.Clear();
@@ -921,6 +968,7 @@ namespace DB91
                     SqlDataReader reader = cmd.ExecuteReader();
                     // Create SqlBulkCopy
                     SqlBulkCopy bulkData = new SqlBulkCopy(destination);
+                    bulkData.BulkCopyTimeout = int.MaxValue;
                     bulkData.DestinationTableName = Tabla;
                     // Write data
                     bulkData.WriteToServer(reader);
@@ -1086,6 +1134,31 @@ namespace DB91
             catch (Exception)
             {
             }
+        }
+
+        private void button10_Click_1(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+            this.Text = "DB Maid: " + ObtenerFlavorText();
+        }
+
+        private void salirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void guardarAmbienteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            button3_Click(null, null);
+        }
+
+        private void cargarAmbienteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            button5_Click_1(null, null);
         }
     }
     namespace ExtensionMethods

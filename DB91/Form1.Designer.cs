@@ -38,7 +38,6 @@
             this.btnGenerarScript = new System.Windows.Forms.Button();
             this.btnEjecutarScript = new System.Windows.Forms.Button();
             this.btnQuitarTabla = new System.Windows.Forms.Button();
-            this.txtConnStr = new System.Windows.Forms.TextBox();
             this.btnConectarYBuscar = new System.Windows.Forms.Button();
             this.TabPanel = new System.Windows.Forms.TabControl();
             this.tabTablas = new System.Windows.Forms.TabPage();
@@ -83,6 +82,13 @@
             this.button3 = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.txtConnStr = new System.Windows.Forms.ComboBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.guardarAmbienteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cargarAmbienteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TabPanel.SuspendLayout();
             this.tabTablas.SuspendLayout();
             this.tabStoreds.SuspendLayout();
@@ -91,12 +97,13 @@
             this.tabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 9);
+            this.label1.Location = new System.Drawing.Point(12, 31);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(139, 13);
             this.label1.TabIndex = 0;
@@ -108,7 +115,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvTablasOrigen.Location = new System.Drawing.Point(6, 32);
             this.tvTablasOrigen.Name = "tvTablasOrigen";
-            this.tvTablasOrigen.Size = new System.Drawing.Size(250, 400);
+            this.tvTablasOrigen.Size = new System.Drawing.Size(250, 378);
             this.tvTablasOrigen.TabIndex = 1;
             this.tvTablasOrigen.Click += new System.EventHandler(this.tvTablasOrigen_Click);
             this.tvTablasOrigen.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tvTablasOrigen_MouseDoubleClick);
@@ -119,7 +126,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvTablasDestino.Location = new System.Drawing.Point(351, 32);
             this.tvTablasDestino.Name = "tvTablasDestino";
-            this.tvTablasDestino.Size = new System.Drawing.Size(250, 400);
+            this.tvTablasDestino.Size = new System.Drawing.Size(250, 378);
             this.tvTablasDestino.TabIndex = 2;
             // 
             // btnAgregarTabla
@@ -150,7 +157,7 @@
             // 
             // btnGenerarScript
             // 
-            this.btnGenerarScript.Location = new System.Drawing.Point(27, 167);
+            this.btnGenerarScript.Location = new System.Drawing.Point(27, 202);
             this.btnGenerarScript.Name = "btnGenerarScript";
             this.btnGenerarScript.Size = new System.Drawing.Size(59, 23);
             this.btnGenerarScript.TabIndex = 7;
@@ -162,7 +169,7 @@
             // btnEjecutarScript
             // 
             this.btnEjecutarScript.Enabled = false;
-            this.btnEjecutarScript.Location = new System.Drawing.Point(92, 167);
+            this.btnEjecutarScript.Location = new System.Drawing.Point(92, 202);
             this.btnEjecutarScript.Name = "btnEjecutarScript";
             this.btnEjecutarScript.Size = new System.Drawing.Size(66, 23);
             this.btnEjecutarScript.TabIndex = 8;
@@ -181,17 +188,9 @@
             this.btnQuitarTabla.UseVisualStyleBackColor = true;
             this.btnQuitarTabla.Click += new System.EventHandler(this.btnQuitarTabla_Click);
             // 
-            // txtConnStr
-            // 
-            this.txtConnStr.Location = new System.Drawing.Point(154, 6);
-            this.txtConnStr.Name = "txtConnStr";
-            this.txtConnStr.Size = new System.Drawing.Size(487, 20);
-            this.txtConnStr.TabIndex = 0;
-            this.txtConnStr.Text = "Server=192.168.0.215;Database=JDE_CRP;User Id=CRPDTA;Password=CRPDTA;";
-            // 
             // btnConectarYBuscar
             // 
-            this.btnConectarYBuscar.Location = new System.Drawing.Point(647, 4);
+            this.btnConectarYBuscar.Location = new System.Drawing.Point(650, 26);
             this.btnConectarYBuscar.Name = "btnConectarYBuscar";
             this.btnConectarYBuscar.Size = new System.Drawing.Size(108, 22);
             this.btnConectarYBuscar.TabIndex = 11;
@@ -207,10 +206,10 @@
             this.TabPanel.Controls.Add(this.tabStoreds);
             this.TabPanel.Controls.Add(this.tabPage1);
             this.TabPanel.Controls.Add(this.tabPage2);
-            this.TabPanel.Location = new System.Drawing.Point(12, 58);
+            this.TabPanel.Location = new System.Drawing.Point(12, 77);
             this.TabPanel.Name = "TabPanel";
             this.TabPanel.SelectedIndex = 0;
-            this.TabPanel.Size = new System.Drawing.Size(615, 461);
+            this.TabPanel.Size = new System.Drawing.Size(615, 439);
             this.TabPanel.TabIndex = 2;
             // 
             // tabTablas
@@ -225,7 +224,7 @@
             this.tabTablas.Location = new System.Drawing.Point(4, 22);
             this.tabTablas.Name = "tabTablas";
             this.tabTablas.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTablas.Size = new System.Drawing.Size(607, 435);
+            this.tabTablas.Size = new System.Drawing.Size(607, 413);
             this.tabTablas.TabIndex = 0;
             this.tabTablas.Text = "Tablas";
             // 
@@ -241,7 +240,7 @@
             this.tabStoreds.Location = new System.Drawing.Point(4, 22);
             this.tabStoreds.Name = "tabStoreds";
             this.tabStoreds.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStoreds.Size = new System.Drawing.Size(607, 435);
+            this.tabStoreds.Size = new System.Drawing.Size(607, 413);
             this.tabStoreds.TabIndex = 1;
             this.tabStoreds.Text = "Stored Procedures";
             // 
@@ -311,7 +310,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(607, 435);
+            this.tabPage1.Size = new System.Drawing.Size(607, 413);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Vistas";
             // 
@@ -381,7 +380,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(607, 435);
+            this.tabPage2.Size = new System.Drawing.Size(607, 413);
             this.tabPage2.TabIndex = 3;
             this.tabPage2.Text = "Funciones";
             // 
@@ -441,20 +440,20 @@
             // 
             // txtCatalog
             // 
-            this.txtCatalog.Location = new System.Drawing.Point(154, 29);
+            this.txtCatalog.Location = new System.Drawing.Point(157, 51);
             this.txtCatalog.Name = "txtCatalog";
             this.txtCatalog.Size = new System.Drawing.Size(487, 20);
             this.txtCatalog.TabIndex = 1;
-            this.txtCatalog.Text = "JDE_CRP";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 32);
+            this.label2.Location = new System.Drawing.Point(12, 54);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(43, 13);
             this.label2.TabIndex = 13;
             this.label2.Text = "Catalog";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // txtScriptSQL
             // 
@@ -476,13 +475,13 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(7, 13);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(88, 13);
+            this.label3.Size = new System.Drawing.Size(90, 13);
             this.label3.TabIndex = 16;
-            this.label3.Text = "DB Local destino";
+            this.label3.Text = "DB Local Destino";
             // 
             // btnDesconectar
             // 
-            this.btnDesconectar.Location = new System.Drawing.Point(647, 29);
+            this.btnDesconectar.Location = new System.Drawing.Point(650, 51);
             this.btnDesconectar.Name = "btnDesconectar";
             this.btnDesconectar.Size = new System.Drawing.Size(108, 22);
             this.btnDesconectar.TabIndex = 18;
@@ -493,7 +492,7 @@
             // btnGuardarScript
             // 
             this.btnGuardarScript.Enabled = false;
-            this.btnGuardarScript.Location = new System.Drawing.Point(243, 167);
+            this.btnGuardarScript.Location = new System.Drawing.Point(243, 202);
             this.btnGuardarScript.Name = "btnGuardarScript";
             this.btnGuardarScript.Size = new System.Drawing.Size(65, 23);
             this.btnGuardarScript.TabIndex = 19;
@@ -506,7 +505,7 @@
             // 
             this.cbDBsLocales.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbDBsLocales.FormattingEnabled = true;
-            this.cbDBsLocales.Location = new System.Drawing.Point(147, 10);
+            this.cbDBsLocales.Location = new System.Drawing.Point(103, 10);
             this.cbDBsLocales.Name = "cbDBsLocales";
             this.cbDBsLocales.Size = new System.Drawing.Size(216, 21);
             this.cbDBsLocales.TabIndex = 1;
@@ -514,7 +513,7 @@
             // btnBulkCopy
             // 
             this.btnBulkCopy.Enabled = false;
-            this.btnBulkCopy.Location = new System.Drawing.Point(164, 167);
+            this.btnBulkCopy.Location = new System.Drawing.Point(164, 202);
             this.btnBulkCopy.Name = "btnBulkCopy";
             this.btnBulkCopy.Size = new System.Drawing.Size(73, 23);
             this.btnBulkCopy.TabIndex = 23;
@@ -573,7 +572,7 @@
             // 
             this.button2.Location = new System.Drawing.Point(10, 37);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(120, 23);
+            this.button2.Size = new System.Drawing.Size(148, 23);
             this.button2.TabIndex = 0;
             this.button2.Text = "Iniciar";
             this.button2.UseVisualStyleBackColor = true;
@@ -586,10 +585,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Location = new System.Drawing.Point(633, 58);
+            this.tabControl1.Location = new System.Drawing.Point(633, 79);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(400, 461);
+            this.tabControl1.Size = new System.Drawing.Size(447, 437);
             this.tabControl1.TabIndex = 25;
             // 
             // tabPage3
@@ -612,13 +611,13 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(392, 435);
+            this.tabPage3.Size = new System.Drawing.Size(439, 411);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Tareas";
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(261, 37);
+            this.button5.Location = new System.Drawing.Point(211, 56);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(108, 23);
             this.button5.TabIndex = 3;
@@ -639,7 +638,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(147, 37);
+            this.button3.Location = new System.Drawing.Point(211, 32);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(108, 23);
             this.button3.TabIndex = 2;
@@ -654,7 +653,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(392, 435);
+            this.tabPage4.Size = new System.Drawing.Size(439, 411);
             this.tabPage4.TabIndex = 1;
             this.tabPage4.Text = "Resultado";
             // 
@@ -662,20 +661,79 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // txtConnStr
+            // 
+            this.txtConnStr.FormattingEnabled = true;
+            this.txtConnStr.Location = new System.Drawing.Point(157, 27);
+            this.txtConnStr.Name = "txtConnStr";
+            this.txtConnStr.Size = new System.Drawing.Size(487, 21);
+            this.txtConnStr.TabIndex = 26;
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.archivoToolStripMenuItem,
+            this.ayudaToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.menuStrip1.Size = new System.Drawing.Size(1092, 24);
+            this.menuStrip1.TabIndex = 27;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // archivoToolStripMenuItem
+            // 
+            this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.guardarAmbienteToolStripMenuItem,
+            this.cargarAmbienteToolStripMenuItem,
+            this.salirToolStripMenuItem});
+            this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
+            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.archivoToolStripMenuItem.Text = "Archivo";
+            // 
+            // guardarAmbienteToolStripMenuItem
+            // 
+            this.guardarAmbienteToolStripMenuItem.Name = "guardarAmbienteToolStripMenuItem";
+            this.guardarAmbienteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.guardarAmbienteToolStripMenuItem.Text = "Guardar ambiente";
+            this.guardarAmbienteToolStripMenuItem.Click += new System.EventHandler(this.guardarAmbienteToolStripMenuItem_Click);
+            // 
+            // cargarAmbienteToolStripMenuItem
+            // 
+            this.cargarAmbienteToolStripMenuItem.Name = "cargarAmbienteToolStripMenuItem";
+            this.cargarAmbienteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cargarAmbienteToolStripMenuItem.Text = "Cargar ambiente";
+            this.cargarAmbienteToolStripMenuItem.Click += new System.EventHandler(this.cargarAmbienteToolStripMenuItem_Click);
+            // 
+            // salirToolStripMenuItem
+            // 
+            this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.salirToolStripMenuItem.Text = "Salir";
+            this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
+            // 
+            // ayudaToolStripMenuItem
+            // 
+            this.ayudaToolStripMenuItem.Name = "ayudaToolStripMenuItem";
+            this.ayudaToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.ayudaToolStripMenuItem.Text = "Ayuda";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1045, 528);
+            this.ClientSize = new System.Drawing.Size(1092, 528);
+            this.Controls.Add(this.txtConnStr);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnDesconectar);
             this.Controls.Add(this.txtCatalog);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.TabPanel);
             this.Controls.Add(this.btnConectarYBuscar);
-            this.Controls.Add(this.txtConnStr);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "DB Maid";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -692,6 +750,8 @@
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -708,7 +768,6 @@
         private System.Windows.Forms.Button btnGenerarScript;
         private System.Windows.Forms.Button btnEjecutarScript;
         private System.Windows.Forms.Button btnQuitarTabla;
-        private System.Windows.Forms.TextBox txtConnStr;
         private System.Windows.Forms.Button btnConectarYBuscar;
         private System.Windows.Forms.TabControl TabPanel;
         private System.Windows.Forms.TabPage tabTablas;
@@ -753,6 +812,13 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.ComboBox txtConnStr;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem archivoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ayudaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem salirToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cargarAmbienteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem guardarAmbienteToolStripMenuItem;
     }
 }
 
