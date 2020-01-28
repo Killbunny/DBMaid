@@ -616,7 +616,7 @@ namespace DB91
                             foreach (var element in instances)
                             {
                                 if (element == "MSSQLSERVER")
-                                    cbDBsLocales.Items.Add(System.Environment.MachineName + " (SQL Server)");
+                                    cbDBsLocales.Items.Add(System.Environment.MachineName);
                                 else
                                     cbDBsLocales.Items.Add(System.Environment.MachineName + @"\" + element);
 
