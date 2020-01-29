@@ -77,6 +77,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.txtOutput = new System.Windows.Forms.RichTextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.lbHelpBulk = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
@@ -157,7 +158,7 @@
             // 
             // btnGenerarScript
             // 
-            this.btnGenerarScript.Location = new System.Drawing.Point(27, 202);
+            this.btnGenerarScript.Location = new System.Drawing.Point(338, 13);
             this.btnGenerarScript.Name = "btnGenerarScript";
             this.btnGenerarScript.Size = new System.Drawing.Size(59, 23);
             this.btnGenerarScript.TabIndex = 7;
@@ -169,7 +170,7 @@
             // btnEjecutarScript
             // 
             this.btnEjecutarScript.Enabled = false;
-            this.btnEjecutarScript.Location = new System.Drawing.Point(92, 202);
+            this.btnEjecutarScript.Location = new System.Drawing.Point(338, 42);
             this.btnEjecutarScript.Name = "btnEjecutarScript";
             this.btnEjecutarScript.Size = new System.Drawing.Size(66, 23);
             this.btnEjecutarScript.TabIndex = 8;
@@ -460,6 +461,7 @@
             this.txtScriptSQL.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtScriptSQL.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScriptSQL.Location = new System.Drawing.Point(6, 5);
             this.txtScriptSQL.Name = "txtScriptSQL";
             this.txtScriptSQL.ReadOnly = true;
@@ -492,7 +494,7 @@
             // btnGuardarScript
             // 
             this.btnGuardarScript.Enabled = false;
-            this.btnGuardarScript.Location = new System.Drawing.Point(243, 202);
+            this.btnGuardarScript.Location = new System.Drawing.Point(339, 100);
             this.btnGuardarScript.Name = "btnGuardarScript";
             this.btnGuardarScript.Size = new System.Drawing.Size(65, 23);
             this.btnGuardarScript.TabIndex = 19;
@@ -513,7 +515,7 @@
             // btnBulkCopy
             // 
             this.btnBulkCopy.Enabled = false;
-            this.btnBulkCopy.Location = new System.Drawing.Point(164, 202);
+            this.btnBulkCopy.Location = new System.Drawing.Point(338, 71);
             this.btnBulkCopy.Name = "btnBulkCopy";
             this.btnBulkCopy.Size = new System.Drawing.Size(73, 23);
             this.btnBulkCopy.TabIndex = 23;
@@ -594,6 +596,7 @@
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage3.Controls.Add(this.txtOutput);
             this.tabPage3.Controls.Add(this.button5);
             this.tabPage3.Controls.Add(this.lbHelpBulk);
             this.tabPage3.Controls.Add(this.button2);
@@ -614,6 +617,21 @@
             this.tabPage3.Size = new System.Drawing.Size(439, 411);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Tareas";
+            // 
+            // txtOutput
+            // 
+            this.txtOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtOutput.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtOutput.Location = new System.Drawing.Point(13, 159);
+            this.txtOutput.Name = "txtOutput";
+            this.txtOutput.ReadOnly = true;
+            this.txtOutput.Size = new System.Drawing.Size(420, 246);
+            this.txtOutput.TabIndex = 27;
+            this.txtOutput.Text = "";
+            this.txtOutput.WordWrap = false;
+            this.txtOutput.TextChanged += new System.EventHandler(this.txtOutput_TextChanged);
             // 
             // button5
             // 
@@ -694,21 +712,21 @@
             // guardarAmbienteToolStripMenuItem
             // 
             this.guardarAmbienteToolStripMenuItem.Name = "guardarAmbienteToolStripMenuItem";
-            this.guardarAmbienteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.guardarAmbienteToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.guardarAmbienteToolStripMenuItem.Text = "Guardar ambiente";
             this.guardarAmbienteToolStripMenuItem.Click += new System.EventHandler(this.guardarAmbienteToolStripMenuItem_Click);
             // 
             // cargarAmbienteToolStripMenuItem
             // 
             this.cargarAmbienteToolStripMenuItem.Name = "cargarAmbienteToolStripMenuItem";
-            this.cargarAmbienteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cargarAmbienteToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.cargarAmbienteToolStripMenuItem.Text = "Cargar ambiente";
             this.cargarAmbienteToolStripMenuItem.Click += new System.EventHandler(this.cargarAmbienteToolStripMenuItem_Click);
             // 
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
@@ -819,6 +837,7 @@
         private System.Windows.Forms.ToolStripMenuItem salirToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cargarAmbienteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem guardarAmbienteToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox txtOutput;
     }
 }
 

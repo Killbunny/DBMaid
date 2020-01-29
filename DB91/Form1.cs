@@ -227,11 +227,11 @@ namespace DB91
             try
             {
                 cnn.Open();
-                if(cnn.State == ConnectionState.Open)
+                if (cnn.State == ConnectionState.Open)
                 {
                     System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
-                    
-                    var csNombre = csp.Where(x => x.ToUpper().Contains("DATA SOURCE")|| x.ToUpper().Contains("SERVER")).Single().Split('=').Where(x=> !(x.ToUpper().Contains("DATA SOURCE") || x.ToUpper().Contains("SERVER"))).Single();
+
+                    var csNombre = csp.Where(x => x.ToUpper().Contains("DATA SOURCE") || x.ToUpper().Contains("SERVER")).Single().Split('=').Where(x => !(x.ToUpper().Contains("DATA SOURCE") || x.ToUpper().Contains("SERVER"))).Single();
                     config.AppSettings.Settings.Remove(csNombre);
                     config.AppSettings.Settings.Add(csNombre, connetionString);
                     config.Save(ConfigurationSaveMode.Modified);
@@ -241,11 +241,11 @@ namespace DB91
                     config.AppSettings.Settings.AllKeys.ToList().ForEach(key => { txtConnStr.Items.Add(config.AppSettings.Settings[key].Value); });
                 }
 
-                if( txtCatalog.Text== null || txtCatalog.Text.Trim().Equals(""))
+                if (txtCatalog.Text == null || txtCatalog.Text.Trim().Equals(""))
                 {
-                    txtCatalog.Text= csp.Where(x => x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE")).Single().Split('=').Where(x => !(x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE"))).Single();
+                    txtCatalog.Text = csp.Where(x => x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE")).Single().Split('=').Where(x => !(x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE"))).Single();
                 }
-                
+
                 #region Tablas
                 tvTablasOrigen.Nodes.Clear();
                 string queryObtenerTablas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'BASE TABLE'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
@@ -598,10 +598,10 @@ namespace DB91
 
 
                 System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
-                config.AppSettings.Settings.AllKeys.ToList().ForEach(key =>{txtConnStr.Items.Add(config.AppSettings.Settings[key].Value);});
+                config.AppSettings.Settings.AllKeys.ToList().ForEach(key => { txtConnStr.Items.Add(config.AppSettings.Settings[key].Value); });
 
 
-                
+
 
                 var registryViewArray = new[] { RegistryView.Registry32, RegistryView.Registry64 };
 
@@ -672,7 +672,7 @@ namespace DB91
             };
             Random random = new Random();
 
-            var i=random.Next(0, flavorTexts.Count());
+            var i = random.Next(0, flavorTexts.Count());
             return flavorTexts[i];
         }
 
@@ -934,7 +934,8 @@ namespace DB91
                 SqlConnection conn = new SqlConnection(connetionString);
                 Server server = new Server(new ServerConnection(conn));
                 server.ConnectionContext.ExecuteNonQuery(script);
-                MessageBox.Show("Script ejecutado");
+                txtOutput.AppendText("Script ejecutado" + "\n");
+                //MessageBox.Show();
             }
             catch (Exception ex)
             {
@@ -949,36 +950,47 @@ namespace DB91
 
         private void BulkCopy()
         {
-            MessageBox.Show("Se inició el Bulk Copy. \nLa pantalla puede dejar de responder.");
+            //MessageBox.Show
+            txtOutput.AppendText
+                ("Se inició el Bulk Copy. \nLa pantalla puede dejar de responder.\n");
+
             try
             {
+                SqlConnection source = new SqlConnection(txtConnStr.Text);
+                SqlConnection destination = new SqlConnection(CADENA_CONEXION_LOCAL.Replace("{instancia}", cbDBsLocales.Text));
+                source.Open();
+                destination.Open();
                 foreach (TreeNode nodo in _tvTablasDestino.Nodes)
                 {
                     var partes = nodo.Text.Split('.');
                     string Tabla = partes[0] + "." + partes[1] + "." + partes[2];
-                    SqlConnection source = new SqlConnection(txtConnStr.Text);
-                    SqlConnection destination = new SqlConnection(CADENA_CONEXION_LOCAL.Replace("{instancia}", cbDBsLocales.Text));
                     // Clean up destination table. 
-                    SqlCommand cmd = new SqlCommand("DELETE FROM " + Tabla, destination);
-                    source.Open();
-                    destination.Open();
+                    string cmdDelete = "DELETE FROM " + Tabla;
+                    txtOutput.AppendText("Ejecutando: " + cmdDelete+"\n");
+                    SqlCommand cmd = new SqlCommand(cmdDelete, destination);
                     cmd.ExecuteNonQuery();
                     //TODO: Hacer que se pueda poner un where (opcional?) para los datos
-                    cmd = new SqlCommand("SELECT * FROM " + Tabla, source);
+                    string cmdSelect = "SELECT * FROM " + Tabla;
+                    cmd = new SqlCommand(cmdSelect, source);
+                    txtOutput.AppendText("Ejecutando: " + cmdSelect + "\n");
                     SqlDataReader reader = cmd.ExecuteReader();
                     // Create SqlBulkCopy
+                    txtOutput.AppendText("Ejecutando bulk copy de " + Tabla + "\n");
                     SqlBulkCopy bulkData = new SqlBulkCopy(destination);
                     bulkData.BulkCopyTimeout = int.MaxValue;
                     bulkData.DestinationTableName = Tabla;
                     // Write data
                     bulkData.WriteToServer(reader);
+                    txtOutput.AppendText("Bulk copy de " + Tabla + " terminado" + "\n");
                     // Close objects
                     bulkData.Close();
-                    destination.Close();
-                    source.Close();
-
+                    reader.Close();
                 }
-                MessageBox.Show("Bulk Copy terminado");
+                destination.Close();
+                source.Close();
+                //MessageBox.Show
+                txtOutput.AppendText
+                    ("Bulk Copy terminado" + "\n");
             }
             catch (Exception ex)
             {
@@ -998,6 +1010,7 @@ namespace DB91
             if (ckGuardar.Checked) GuardarScript();
             if (ckEjecutar.Checked) EjecutarScript();
             if (ckBulkCopy.Checked) BulkCopy();
+            MessageBox.Show("Terminó la ejecución");
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -1033,6 +1046,7 @@ namespace DB91
         {
 
             int size = -1;
+            openFileDialog1.FileName = "";
             openFileDialog1.DefaultExt = ".json";
             openFileDialog1.Filter = "JSON (.json)|*.json";
             DialogResult result = openFileDialog1.ShowDialog();
@@ -1138,7 +1152,7 @@ namespace DB91
 
         private void button10_Click_1(object sender, EventArgs e)
         {
-           
+
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -1159,6 +1173,14 @@ namespace DB91
         private void cargarAmbienteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             button5_Click_1(null, null);
+        }
+
+        private void txtOutput_TextChanged(object sender, EventArgs e)
+        {
+            // set the current caret position to the end
+            txtOutput.SelectionStart = txtOutput.Text.Length;
+            // scroll it automatically
+            txtOutput.ScrollToCaret();
         }
     }
     namespace ExtensionMethods
