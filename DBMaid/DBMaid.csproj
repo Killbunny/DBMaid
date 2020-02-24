@@ -178,10 +178,19 @@
     <Compile Include="FrmPincipal.Designer.cs">
       <DependentUpon>FrmPincipal.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmSentenciaWhere.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSentenciaWhere.Designer.cs">
+      <DependentUpon>FrmSentenciaWhere.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FrmPincipal.resx">
       <DependentUpon>FrmPincipal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmSentenciaWhere.resx">
+      <DependentUpon>FrmSentenciaWhere.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

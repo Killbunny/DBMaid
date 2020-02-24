@@ -217,6 +217,9 @@ namespace DBMaid
         TreeView _tvVistasDestino = new TreeView();
         TreeView _tvFuncionesDestino = new TreeView();
 
+
+        Dictionary<string, string> _sentenciasWhere = new Dictionary<string, string>();
+
         private void button5_Click(object sender, EventArgs e)
         {
             string connetionString = null;
@@ -273,19 +276,6 @@ namespace DBMaid
                 dataReader.Close();
                 command.Dispose();
                 #endregion
-                #region Vistas
-                tvVistasOrigen.Nodes.Clear();
-                string queryObtenerVistas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'VIEW'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
-                command = new SqlCommand(queryObtenerVistas, cnn);
-                dataReader = command.ExecuteReader();
-                while (dataReader.Read())
-                {
-                    tvVistasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
-                    _tvVistasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
-                }
-                dataReader.Close();
-                command.Dispose();
-                #endregion
                 #region Funciones
                 tvFuncionesOrigen.Nodes.Clear();
                 string queryObtenerFunciones = $"SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE = 'FUNCTION'  AND  SPECIFIC_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
@@ -299,6 +289,19 @@ namespace DBMaid
                 dataReader.Close();
                 command.Dispose();
                 #endregion
+                #region Vistas
+                tvVistasOrigen.Nodes.Clear();
+                string queryObtenerVistas = $"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1=1 and  TABLE_TYPE = 'VIEW'  AND  TABLE_CATALOG='{txtCatalog.Text}' order by 1,2,3 asc";
+                command = new SqlCommand(queryObtenerVistas, cnn);
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    tvVistasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                    _tvVistasOrigen.Nodes.Add(dataReader.GetString(0) + "." + dataReader.GetString(1) + "." + dataReader.GetString(2));
+                }
+                dataReader.Close();
+                command.Dispose();
+                #endregion
 
                 txtConnStr.Enabled = false;
                 txtCatalog.ReadOnly = true;
@@ -307,7 +310,7 @@ namespace DBMaid
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error:"+ ex.Message);
+                MessageBox.Show("Error:" + ex.Message);
             }
 
         }
@@ -316,13 +319,23 @@ namespace DBMaid
         {
             try
             {
-                var nodo = tvTablasOrigen.SelectedNode;
-                foreach (TreeNode n in tvTablasDestino.Nodes)
-                {
-                    if (n.Text == nodo.Text) return;
-                }
-                tvTablasDestino.Nodes.Add((TreeNode)tvTablasOrigen.SelectedNode.Clone());
-                _tvTablasDestino.Nodes.Add((TreeNode)tvTablasOrigen.SelectedNode.Clone());
+                //var nodo = tvTablasOrigen.SelectedNode;
+                //foreach (TreeNode n in tvTablasDestino.Nodes)
+                //{
+                //    if (n.Text == nodo.Text) return;
+                //}
+                tvTablasOrigen.Nodes.ToList()
+                   .Where(n => n.Checked).ToList().ForEach(nodo =>
+                   {
+                       if (!tvTablasDestino.Nodes.ToList().Where(nd => nd.Text == nodo.Text).Any())
+                       {
+                           tvTablasDestino.Nodes.Add((TreeNode)nodo.Clone());
+                           _tvTablasDestino.Nodes.Add((TreeNode)nodo.Clone());
+                       }
+                   });
+
+
+
             }
             catch (Exception)
             {
@@ -405,7 +418,6 @@ namespace DBMaid
                 txtScriptSQL.AppendText(sb.ToString());
                 txtScriptSQL.AppendText("GO\n");
                 #endregion
-
                 #region stored procedures
                 txtScriptSQL.AppendText("-- CREAR STORED PROCEDURES\n\n");
                 foreach (TreeNode nodo in _tvStoredDestino.Nodes)
@@ -426,15 +438,14 @@ namespace DBMaid
                     command.Dispose();
                 }
                 #endregion
-
-                #region Vistas
-                txtScriptSQL.AppendText("-- CREAR VISTAS\n\n");
-                foreach (TreeNode nodo in _tvVistasDestino.Nodes)
+                #region Funciones
+                txtScriptSQL.AppendText("-- CREAR FUNCIONES\n\n");
+                foreach (TreeNode nodo in _tvFuncionesDestino.Nodes)
                 {
 
                     var partes = nodo.Text.Split('.');
                     string Tabla = partes[1] + "." + partes[2];
-                    txtScriptSQL.AppendText($"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1 = 1 and  TABLE_TYPE = 'VIEW' AND TABLE_CATALOG = '{partes[0]}' and TABLE_SCHEMA = '{partes[1]}' and TABLE_NAME = '{partes[2]}') \n DROP VIEW {partes[1]}.{partes[2]} \n go \n");
+                    txtScriptSQL.AppendText($"IF EXISTS ( SELECT *  FROM INFORMATION_SCHEMA.ROUTINES where ROUTINE_TYPE = 'FUNCTION' and SPECIFIC_NAME ='{partes[2]}' and SPECIFIC_SCHEMA ='{partes[1]}' )\n DROP FUNCTION  [{partes[1]}].[{partes[2]}] \n go \n");
                     string queryCopiar = $"sp_helptext '{Tabla}'";
                     SqlCommand command = new SqlCommand(queryCopiar, cnn);
                     SqlDataReader dataReader = command.ExecuteReader();
@@ -447,15 +458,14 @@ namespace DBMaid
                     command.Dispose();
                 }
                 #endregion
-
-                #region Funciones
-                txtScriptSQL.AppendText("-- CREAR FUNCIONES\n\n");
-                foreach (TreeNode nodo in _tvFuncionesDestino.Nodes)
+                #region Vistas
+                txtScriptSQL.AppendText("-- CREAR VISTAS\n\n");
+                foreach (TreeNode nodo in _tvVistasDestino.Nodes)
                 {
 
                     var partes = nodo.Text.Split('.');
                     string Tabla = partes[1] + "." + partes[2];
-                    txtScriptSQL.AppendText($"IF EXISTS ( SELECT *  FROM INFORMATION_SCHEMA.ROUTINES where ROUTINE_TYPE = 'FUNCTION' and SPECIFIC_NAME ='{partes[2]}' and SPECIFIC_SCHEMA ='{partes[1]}' )\n DROP FUNCTION  [{partes[1]}].[{partes[2]}] \n go \n");
+                    txtScriptSQL.AppendText($"IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE 1 = 1 and  TABLE_TYPE = 'VIEW' AND TABLE_CATALOG = '{partes[0]}' and TABLE_SCHEMA = '{partes[1]}' and TABLE_NAME = '{partes[2]}') \n DROP VIEW {partes[1]}.{partes[2]} \n go \n");
                     string queryCopiar = $"sp_helptext '{Tabla}'";
                     SqlCommand command = new SqlCommand(queryCopiar, cnn);
                     SqlDataReader dataReader = command.ExecuteReader();
@@ -486,13 +496,24 @@ namespace DBMaid
         {
             try
             {
-                var nodo = tvStoredOrigen.SelectedNode;
-                foreach (TreeNode n in tvStoredDestino.Nodes)
-                {
-                    if (n.Text == nodo.Text) return;
-                }
-                tvStoredDestino.Nodes.Add((TreeNode)tvStoredOrigen.SelectedNode.Clone());
-                _tvStoredDestino.Nodes.Add((TreeNode)tvStoredOrigen.SelectedNode.Clone());
+                //var nodo = tvStoredOrigen.SelectedNode;
+                //foreach (TreeNode n in tvStoredDestino.Nodes)
+                //{
+                //    if (n.Text == nodo.Text) return;
+                //}
+                //tvStoredDestino.Nodes.Add((TreeNode)tvStoredOrigen.SelectedNode.Clone());
+                //_tvStoredDestino.Nodes.Add((TreeNode)tvStoredOrigen.SelectedNode.Clone());
+
+
+                tvStoredOrigen.Nodes.ToList()
+                    .Where(n => n.Checked).ToList().ForEach(nodo =>
+                    {
+                        if (!tvStoredDestino.Nodes.ToList().Where(nd => nd.Text == nodo.Text).Any())
+                        {
+                            tvStoredDestino.Nodes.Add((TreeNode)nodo.Clone());
+                            _tvStoredDestino.Nodes.Add((TreeNode)nodo.Clone());
+                        }
+                    });
             }
             catch (Exception)
             {
@@ -521,13 +542,23 @@ namespace DBMaid
         {
             try
             {
-                var nodo = tvVistasOrigen.SelectedNode;
-                foreach (TreeNode n in tvVistasDestino.Nodes)
-                {
-                    if (n.Text == nodo.Text) return;
-                }
-                tvVistasDestino.Nodes.Add((TreeNode)tvVistasOrigen.SelectedNode.Clone());
-                _tvVistasDestino.Nodes.Add((TreeNode)tvVistasOrigen.SelectedNode.Clone());
+                //var nodo = tvVistasOrigen.SelectedNode;
+                //foreach (TreeNode n in tvVistasDestino.Nodes)
+                //{
+                //    if (n.Text == nodo.Text) return;
+                //}
+                //tvVistasDestino.Nodes.Add((TreeNode)tvVistasOrigen.SelectedNode.Clone());
+                //_tvVistasDestino.Nodes.Add((TreeNode)tvVistasOrigen.SelectedNode.Clone());
+
+                tvVistasOrigen.Nodes.ToList()
+                    .Where(n => n.Checked).ToList().ForEach(nodo =>
+                    {
+                        if (!tvVistasDestino.Nodes.ToList().Where(nd => nd.Text == nodo.Text).Any())
+                        {
+                            tvVistasDestino.Nodes.Add((TreeNode)nodo.Clone());
+                            _tvVistasDestino.Nodes.Add((TreeNode)nodo.Clone());
+                        }
+                    });
             }
             catch (Exception)
             {
@@ -557,13 +588,23 @@ namespace DBMaid
         {
             try
             {
-                var nodo = tvFuncionesOrigen.SelectedNode;
-                foreach (TreeNode n in tvFuncionesDestino.Nodes)
-                {
-                    if (n.Text == nodo.Text) return;
-                }
-                tvFuncionesDestino.Nodes.Add((TreeNode)tvFuncionesOrigen.SelectedNode.Clone());
-                _tvFuncionesDestino.Nodes.Add((TreeNode)tvFuncionesOrigen.SelectedNode.Clone());
+                //var nodo = tvFuncionesOrigen.SelectedNode;
+                //foreach (TreeNode n in tvFuncionesDestino.Nodes)
+                //{
+                //    if (n.Text == nodo.Text) return;
+                //}
+                //tvFuncionesDestino.Nodes.Add((TreeNode)tvFuncionesOrigen.SelectedNode.Clone());
+                //_tvFuncionesDestino.Nodes.Add((TreeNode)tvFuncionesOrigen.SelectedNode.Clone());
+
+                tvFuncionesOrigen.Nodes.ToList()
+                    .Where(n => n.Checked).ToList().ForEach(nodo =>
+                    {
+                        if (!tvFuncionesDestino.Nodes.ToList().Where(nd => nd.Text == nodo.Text).Any())
+                        {
+                            tvFuncionesDestino.Nodes.Add((TreeNode)nodo.Clone());
+                            _tvFuncionesDestino.Nodes.Add((TreeNode)nodo.Clone());
+                        }
+                    });
             }
             catch (Exception)
             {
@@ -699,6 +740,17 @@ namespace DBMaid
             tvTablasOrigen.Nodes.Clear();
             tvVistasDestino.Nodes.Clear();
             tvVistasOrigen.Nodes.Clear();
+
+            _tvFuncionesOrigen.Nodes.Clear();
+            _tvFuncionesDestino.Nodes.Clear();
+            _tvStoredDestino.Nodes.Clear();
+            _tvStoredOrigen.Nodes.Clear();
+            _tvTablasDestino.Nodes.Clear();
+            _tvTablasOrigen.Nodes.Clear();
+            _tvVistasDestino.Nodes.Clear();
+            _tvVistasOrigen.Nodes.Clear();
+
+            _sentenciasWhere.Clear();
         }
 
         private void txtFiltroTablasOrigen_TextChanged(object sender, EventArgs e)
@@ -979,7 +1031,18 @@ namespace DBMaid
                     var cmd = new SqlCommand(cmdDelete, destination);
                     cmd.ExecuteNonQuery();
                     //TODO: Hacer que se pueda poner un where (opcional?) para los datos
-                    string cmdSelect = "SELECT * FROM " + Tabla;
+
+                    var where = _sentenciasWhere.Where(x => x.Key == nodo.Text).SingleOrDefault().Value;
+                    if (where == null || where.Trim() == "")
+                    {
+                        where = "";
+                    }
+                    else
+                    {
+                        where = " where " + where;
+                    }
+
+                    string cmdSelect = "SELECT * FROM " + Tabla + where;
                     cmd = new SqlCommand(cmdSelect, source);
                     txtOutput.AppendText("Ejecutando: " + cmdSelect + "\n");
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -1188,6 +1251,201 @@ namespace DBMaid
             txtOutput.SelectionStart = txtOutput.Text.Length;
             // scroll it automatically
             txtOutput.ScrollToCaret();
+        }
+
+        private void tvTablasDestino_DoubleClick(object sender, EventArgs e)
+        {
+            var nodo = tvTablasDestino.SelectedNode;
+            //KeyValuePair<string,string> kvpNodo = new KeyValuePair<string, string>();
+            var kvp = _sentenciasWhere.Where(x => x.Key == nodo.Text).SingleOrDefault().Value;
+            FrmSentenciaWhere w = new FrmSentenciaWhere(nodo, kvp ?? "");
+            w.ShowDialog();
+            _sentenciasWhere[nodo.Text] = w.kvp;
+            //var a = 1;
+        }
+
+        private void tvStoredOrigen_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                var nodo = tvStoredOrigen.SelectedNode;
+                foreach (TreeNode n in tvStoredDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) return;
+                }
+                tvStoredDestino.Nodes.Add((TreeNode)tvStoredOrigen.SelectedNode.Clone());
+                _tvStoredDestino.Nodes.Add((TreeNode)tvStoredOrigen.SelectedNode.Clone());
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void tvVistasOrigen_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                var nodo = tvVistasOrigen.SelectedNode;
+                foreach (TreeNode n in tvVistasDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) return;
+                }
+                tvVistasDestino.Nodes.Add((TreeNode)tvVistasOrigen.SelectedNode.Clone());
+                _tvVistasDestino.Nodes.Add((TreeNode)tvVistasOrigen.SelectedNode.Clone());
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void tvFuncionesOrigen_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                var nodo = tvFuncionesOrigen.SelectedNode;
+                foreach (TreeNode n in tvFuncionesDestino.Nodes)
+                {
+                    if (n.Text == nodo.Text) return;
+                }
+                tvFuncionesDestino.Nodes.Add((TreeNode)tvFuncionesOrigen.SelectedNode.Clone());
+                _tvFuncionesDestino.Nodes.Add((TreeNode)tvFuncionesOrigen.SelectedNode.Clone());
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private bool ContainsNode(TreeNode node1, TreeNode node2)
+        {  
+            if (node2.Parent == null) return false;
+            if (node2.Parent.Equals(node1)) return true;
+            return ContainsNode(node1, node2.Parent);
+        }
+
+        private void tvTablasDestino_DragDrop(object sender, DragEventArgs e)
+        {
+            MoverTreeNodes(sender, e, tvTablasDestino, _tvTablasDestino);
+        }
+
+        private void MoverTreeNodes(object sender, DragEventArgs e, TreeView treeview, TreeView _treeview)
+        {
+            Point targetPoint = treeview.PointToClient(new Point(e.X, e.Y));
+            TreeNode targetNode = treeview.GetNodeAt(targetPoint);
+            TreeNode draggedNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
+            if (!draggedNode.Equals(targetNode) && !ContainsNode(draggedNode, targetNode))
+            {
+                if (e.Effect == DragDropEffects.Move)
+                {
+                    _treeview.BeginUpdate();
+                    treeview.BeginUpdate();
+                    var newIndex = targetNode.Index;
+                    var oldIndex = draggedNode.Index;
+
+                    var lstNodos = _treeview.Nodes.ToList();
+                    lstNodos.Insert(targetNode.Index, draggedNode);
+                    if (newIndex <= oldIndex) ++oldIndex;
+                    lstNodos.RemoveAt(oldIndex);
+
+                    _treeview.Nodes.Clear();
+                    treeview.Nodes.Clear();
+
+                    lstNodos.ForEach(x => {
+                        _treeview.Nodes.Add((TreeNode)x.Clone());
+                        treeview.Nodes.Add((TreeNode)x.Clone());
+                    });
+                    treeview.EndUpdate();
+                    _treeview.EndUpdate();
+                }
+                targetNode.Expand();
+            }
+        }
+
+        private void tvTablasDestino_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void tvTablasDestino_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void tvTablasDestino_DragOver(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the mouse position.  
+            Point targetPoint = tvTablasDestino.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.  
+            tvTablasDestino.SelectedNode = tvTablasDestino.GetNodeAt(targetPoint);
+        }
+
+        private void tvStoredDestino_DragDrop(object sender, DragEventArgs e)
+        {
+            MoverTreeNodes(sender, e, tvStoredDestino, _tvStoredDestino);
+        }
+
+        private void tvFuncionesDestino_DragDrop(object sender, DragEventArgs e)
+        {
+            MoverTreeNodes(sender, e, tvFuncionesDestino, _tvFuncionesDestino);
+        }
+
+        private void tvVistasDestino_DragDrop(object sender, DragEventArgs e)
+        {
+            MoverTreeNodes(sender, e, tvVistasDestino, _tvVistasDestino);
+        }
+
+        private void tvStoredDestino_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void tvFuncionesDestino_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void tvVistasDestino_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void tvStoredDestino_DragOver(object sender, DragEventArgs e)
+        {
+            Point targetPoint = tvStoredDestino.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.  
+            tvStoredDestino.SelectedNode = tvStoredDestino.GetNodeAt(targetPoint);
+        }
+
+        private void tvFuncionesDestino_DragOver(object sender, DragEventArgs e)
+        {
+            Point targetPoint = tvFuncionesDestino.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.  
+            tvFuncionesDestino.SelectedNode = tvFuncionesDestino.GetNodeAt(targetPoint);
+        }
+
+        private void tvVistasDestino_DragOver(object sender, DragEventArgs e)
+        {
+            Point targetPoint = tvVistasDestino.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.  
+            tvVistasDestino.SelectedNode = tvVistasDestino.GetNodeAt(targetPoint);
+        }
+
+        private void tvStoredDestino_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void tvFuncionesDestino_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
+        }
+
+        private void tvVistasDestino_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            DoDragDrop(e.Item, DragDropEffects.Move);
         }
     }
     namespace ExtensionMethods

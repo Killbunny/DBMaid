@@ -48,13 +48,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.txtFiltroStoredDestino = new System.Windows.Forms.TextBox();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.txtFiltroVistasOrigen = new System.Windows.Forms.TextBox();
-            this.tvVistasOrigen = new System.Windows.Forms.TreeView();
-            this.tvVistasDestino = new System.Windows.Forms.TreeView();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.txtFiltroVistasDestino = new System.Windows.Forms.TextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtFiltroFuncionesOrigen = new System.Windows.Forms.TextBox();
             this.tvFuncionesOrigen = new System.Windows.Forms.TreeView();
@@ -62,6 +55,13 @@
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
             this.txtFiltroFuncionesDestino = new System.Windows.Forms.TextBox();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.txtFiltroVistasOrigen = new System.Windows.Forms.TextBox();
+            this.tvVistasOrigen = new System.Windows.Forms.TreeView();
+            this.tvVistasDestino = new System.Windows.Forms.TreeView();
+            this.button6 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.txtFiltroVistasDestino = new System.Windows.Forms.TextBox();
             this.txtCatalog = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtScriptSQL = new System.Windows.Forms.RichTextBox();
@@ -93,8 +93,8 @@
             this.TabPanel.SuspendLayout();
             this.tabTablas.SuspendLayout();
             this.tabStoreds.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -114,6 +114,7 @@
             // 
             this.tvTablasOrigen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.tvTablasOrigen.CheckBoxes = true;
             this.tvTablasOrigen.Location = new System.Drawing.Point(6, 32);
             this.tvTablasOrigen.Name = "tvTablasOrigen";
             this.tvTablasOrigen.Size = new System.Drawing.Size(250, 378);
@@ -123,12 +124,18 @@
             // 
             // tvTablasDestino
             // 
+            this.tvTablasDestino.AllowDrop = true;
             this.tvTablasDestino.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvTablasDestino.Location = new System.Drawing.Point(351, 32);
             this.tvTablasDestino.Name = "tvTablasDestino";
             this.tvTablasDestino.Size = new System.Drawing.Size(250, 378);
             this.tvTablasDestino.TabIndex = 2;
+            this.tvTablasDestino.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.tvTablasDestino_ItemDrag);
+            this.tvTablasDestino.DragDrop += new System.Windows.Forms.DragEventHandler(this.tvTablasDestino_DragDrop);
+            this.tvTablasDestino.DragEnter += new System.Windows.Forms.DragEventHandler(this.tvTablasDestino_DragEnter);
+            this.tvTablasDestino.DragOver += new System.Windows.Forms.DragEventHandler(this.tvTablasDestino_DragOver);
+            this.tvTablasDestino.DoubleClick += new System.EventHandler(this.tvTablasDestino_DoubleClick);
             // 
             // btnAgregarTabla
             // 
@@ -205,8 +212,8 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.TabPanel.Controls.Add(this.tabTablas);
             this.TabPanel.Controls.Add(this.tabStoreds);
-            this.TabPanel.Controls.Add(this.tabPage1);
             this.TabPanel.Controls.Add(this.tabPage2);
+            this.TabPanel.Controls.Add(this.tabPage1);
             this.TabPanel.Location = new System.Drawing.Point(12, 77);
             this.TabPanel.Name = "TabPanel";
             this.TabPanel.SelectedIndex = 0;
@@ -257,19 +264,26 @@
             // 
             this.tvStoredOrigen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.tvStoredOrigen.CheckBoxes = true;
             this.tvStoredOrigen.Location = new System.Drawing.Point(6, 32);
             this.tvStoredOrigen.Name = "tvStoredOrigen";
             this.tvStoredOrigen.Size = new System.Drawing.Size(250, 378);
             this.tvStoredOrigen.TabIndex = 10;
+            this.tvStoredOrigen.DoubleClick += new System.EventHandler(this.tvStoredOrigen_DoubleClick);
             // 
             // tvStoredDestino
             // 
+            this.tvStoredDestino.AllowDrop = true;
             this.tvStoredDestino.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvStoredDestino.Location = new System.Drawing.Point(351, 32);
             this.tvStoredDestino.Name = "tvStoredDestino";
             this.tvStoredDestino.Size = new System.Drawing.Size(250, 378);
             this.tvStoredDestino.TabIndex = 11;
+            this.tvStoredDestino.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.tvStoredDestino_ItemDrag);
+            this.tvStoredDestino.DragDrop += new System.Windows.Forms.DragEventHandler(this.tvStoredDestino_DragDrop);
+            this.tvStoredDestino.DragEnter += new System.Windows.Forms.DragEventHandler(this.tvStoredDestino_DragEnter);
+            this.tvStoredDestino.DragOver += new System.Windows.Forms.DragEventHandler(this.tvStoredDestino_DragOver);
             // 
             // button1
             // 
@@ -299,76 +313,6 @@
             this.txtFiltroStoredDestino.TabIndex = 14;
             this.txtFiltroStoredDestino.TextChanged += new System.EventHandler(this.txtFiltroStoredDestino_TextChanged);
             // 
-            // tabPage1
-            // 
-            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage1.Controls.Add(this.txtFiltroVistasOrigen);
-            this.tabPage1.Controls.Add(this.tvVistasOrigen);
-            this.tabPage1.Controls.Add(this.tvVistasDestino);
-            this.tabPage1.Controls.Add(this.button6);
-            this.tabPage1.Controls.Add(this.button7);
-            this.tabPage1.Controls.Add(this.txtFiltroVistasDestino);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(607, 413);
-            this.tabPage1.TabIndex = 2;
-            this.tabPage1.Text = "Vistas";
-            // 
-            // txtFiltroVistasOrigen
-            // 
-            this.txtFiltroVistasOrigen.Location = new System.Drawing.Point(6, 6);
-            this.txtFiltroVistasOrigen.Name = "txtFiltroVistasOrigen";
-            this.txtFiltroVistasOrigen.Size = new System.Drawing.Size(250, 20);
-            this.txtFiltroVistasOrigen.TabIndex = 19;
-            this.txtFiltroVistasOrigen.TextChanged += new System.EventHandler(this.tvFiltroVistasOrigen_TextChanged);
-            // 
-            // tvVistasOrigen
-            // 
-            this.tvVistasOrigen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.tvVistasOrigen.Location = new System.Drawing.Point(6, 32);
-            this.tvVistasOrigen.Name = "tvVistasOrigen";
-            this.tvVistasOrigen.Size = new System.Drawing.Size(250, 378);
-            this.tvVistasOrigen.TabIndex = 16;
-            // 
-            // tvVistasDestino
-            // 
-            this.tvVistasDestino.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.tvVistasDestino.Location = new System.Drawing.Point(351, 32);
-            this.tvVistasDestino.Name = "tvVistasDestino";
-            this.tvVistasDestino.Size = new System.Drawing.Size(250, 378);
-            this.tvVistasDestino.TabIndex = 17;
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(270, 61);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
-            this.button6.TabIndex = 21;
-            this.button6.Text = "<-";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(270, 32);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
-            this.button7.TabIndex = 18;
-            this.button7.Text = "->";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
-            // 
-            // txtFiltroVistasDestino
-            // 
-            this.txtFiltroVistasDestino.Location = new System.Drawing.Point(351, 6);
-            this.txtFiltroVistasDestino.Name = "txtFiltroVistasDestino";
-            this.txtFiltroVistasDestino.Size = new System.Drawing.Size(250, 20);
-            this.txtFiltroVistasDestino.TabIndex = 20;
-            this.txtFiltroVistasDestino.TextChanged += new System.EventHandler(this.tvFiltroVistasDestino_TextChanged);
-            // 
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
@@ -397,19 +341,26 @@
             // 
             this.tvFuncionesOrigen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.tvFuncionesOrigen.CheckBoxes = true;
             this.tvFuncionesOrigen.Location = new System.Drawing.Point(6, 32);
             this.tvFuncionesOrigen.Name = "tvFuncionesOrigen";
             this.tvFuncionesOrigen.Size = new System.Drawing.Size(250, 378);
             this.tvFuncionesOrigen.TabIndex = 16;
+            this.tvFuncionesOrigen.DoubleClick += new System.EventHandler(this.tvFuncionesOrigen_DoubleClick);
             // 
             // tvFuncionesDestino
             // 
+            this.tvFuncionesDestino.AllowDrop = true;
             this.tvFuncionesDestino.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvFuncionesDestino.Location = new System.Drawing.Point(351, 32);
             this.tvFuncionesDestino.Name = "tvFuncionesDestino";
             this.tvFuncionesDestino.Size = new System.Drawing.Size(250, 378);
             this.tvFuncionesDestino.TabIndex = 17;
+            this.tvFuncionesDestino.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.tvFuncionesDestino_ItemDrag);
+            this.tvFuncionesDestino.DragDrop += new System.Windows.Forms.DragEventHandler(this.tvFuncionesDestino_DragDrop);
+            this.tvFuncionesDestino.DragEnter += new System.Windows.Forms.DragEventHandler(this.tvFuncionesDestino_DragEnter);
+            this.tvFuncionesDestino.DragOver += new System.Windows.Forms.DragEventHandler(this.tvFuncionesDestino_DragOver);
             // 
             // button8
             // 
@@ -438,6 +389,83 @@
             this.txtFiltroFuncionesDestino.Size = new System.Drawing.Size(250, 20);
             this.txtFiltroFuncionesDestino.TabIndex = 20;
             this.txtFiltroFuncionesDestino.TextChanged += new System.EventHandler(this.tvFiltroFuncionesDestino_TextChanged);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.txtFiltroVistasOrigen);
+            this.tabPage1.Controls.Add(this.tvVistasOrigen);
+            this.tabPage1.Controls.Add(this.tvVistasDestino);
+            this.tabPage1.Controls.Add(this.button6);
+            this.tabPage1.Controls.Add(this.button7);
+            this.tabPage1.Controls.Add(this.txtFiltroVistasDestino);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(607, 413);
+            this.tabPage1.TabIndex = 2;
+            this.tabPage1.Text = "Vistas";
+            // 
+            // txtFiltroVistasOrigen
+            // 
+            this.txtFiltroVistasOrigen.Location = new System.Drawing.Point(6, 6);
+            this.txtFiltroVistasOrigen.Name = "txtFiltroVistasOrigen";
+            this.txtFiltroVistasOrigen.Size = new System.Drawing.Size(250, 20);
+            this.txtFiltroVistasOrigen.TabIndex = 19;
+            this.txtFiltroVistasOrigen.TextChanged += new System.EventHandler(this.tvFiltroVistasOrigen_TextChanged);
+            // 
+            // tvVistasOrigen
+            // 
+            this.tvVistasOrigen.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.tvVistasOrigen.CheckBoxes = true;
+            this.tvVistasOrigen.Location = new System.Drawing.Point(6, 32);
+            this.tvVistasOrigen.Name = "tvVistasOrigen";
+            this.tvVistasOrigen.Size = new System.Drawing.Size(250, 378);
+            this.tvVistasOrigen.TabIndex = 16;
+            this.tvVistasOrigen.DoubleClick += new System.EventHandler(this.tvVistasOrigen_DoubleClick);
+            // 
+            // tvVistasDestino
+            // 
+            this.tvVistasDestino.AllowDrop = true;
+            this.tvVistasDestino.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.tvVistasDestino.Location = new System.Drawing.Point(351, 32);
+            this.tvVistasDestino.Name = "tvVistasDestino";
+            this.tvVistasDestino.Size = new System.Drawing.Size(250, 378);
+            this.tvVistasDestino.TabIndex = 17;
+            this.tvVistasDestino.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.tvVistasDestino_ItemDrag);
+            this.tvVistasDestino.DragDrop += new System.Windows.Forms.DragEventHandler(this.tvVistasDestino_DragDrop);
+            this.tvVistasDestino.DragEnter += new System.Windows.Forms.DragEventHandler(this.tvVistasDestino_DragEnter);
+            this.tvVistasDestino.DragOver += new System.Windows.Forms.DragEventHandler(this.tvVistasDestino_DragOver);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(270, 61);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(75, 23);
+            this.button6.TabIndex = 21;
+            this.button6.Text = "<-";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(270, 32);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.TabIndex = 18;
+            this.button7.Text = "->";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // txtFiltroVistasDestino
+            // 
+            this.txtFiltroVistasDestino.Location = new System.Drawing.Point(351, 6);
+            this.txtFiltroVistasDestino.Name = "txtFiltroVistasDestino";
+            this.txtFiltroVistasDestino.Size = new System.Drawing.Size(250, 20);
+            this.txtFiltroVistasDestino.TabIndex = 20;
+            this.txtFiltroVistasDestino.TextChanged += new System.EventHandler(this.tvFiltroVistasDestino_TextChanged);
             // 
             // txtCatalog
             // 
@@ -736,7 +764,7 @@
             this.ayudaToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.ayudaToolStripMenuItem.Text = "Ayuda";
             // 
-            // Form1
+            // FrmPincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -752,7 +780,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
+            this.Name = "FrmPincipal";
             this.Text = "DB Maid";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.TabPanel.ResumeLayout(false);
@@ -760,10 +788,10 @@
             this.tabTablas.PerformLayout();
             this.tabStoreds.ResumeLayout(false);
             this.tabStoreds.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
