@@ -16,11 +16,11 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using DB91.ExtensionMethods;
+using DBMaid.ExtensionMethods;
 using System.Configuration;
 using System.Reflection;
 
-namespace DB91
+namespace DBMaid
 {
     public partial class Form1 : Form
     {
@@ -966,8 +966,8 @@ namespace DB91
                     string Tabla = partes[0] + "." + partes[1] + "." + partes[2];
                     // Clean up destination table. 
                     string cmdDelete = "DELETE FROM " + Tabla;
-                    txtOutput.AppendText("Ejecutando: " + cmdDelete+"\n");
-                    SqlCommand cmd = new SqlCommand(cmdDelete, destination);
+                    txtOutput.AppendText("Ejecutando: " + cmdDelete + "\n");
+                    var cmd = new SqlCommand(cmdDelete, destination);
                     cmd.ExecuteNonQuery();
                     //TODO: Hacer que se pueda poner un where (opcional?) para los datos
                     string cmdSelect = "SELECT * FROM " + Tabla;

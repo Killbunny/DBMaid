@@ -1,4 +1,4 @@
-﻿namespace DB91
+﻿namespace DBMaid
 {
     partial class Form1
     {
@@ -465,7 +465,7 @@
             this.txtScriptSQL.Location = new System.Drawing.Point(6, 5);
             this.txtScriptSQL.Name = "txtScriptSQL";
             this.txtScriptSQL.ReadOnly = true;
-            this.txtScriptSQL.Size = new System.Drawing.Size(380, 430);
+            this.txtScriptSQL.Size = new System.Drawing.Size(427, 400);
             this.txtScriptSQL.TabIndex = 15;
             this.txtScriptSQL.Text = "";
             this.txtScriptSQL.Visible = false;
