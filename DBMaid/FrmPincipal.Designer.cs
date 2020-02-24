@@ -490,13 +490,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtScriptSQL.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtScriptSQL.Location = new System.Drawing.Point(6, 5);
+            this.txtScriptSQL.Location = new System.Drawing.Point(6, 30);
             this.txtScriptSQL.Name = "txtScriptSQL";
             this.txtScriptSQL.ReadOnly = true;
-            this.txtScriptSQL.Size = new System.Drawing.Size(427, 400);
+            this.txtScriptSQL.Size = new System.Drawing.Size(427, 375);
             this.txtScriptSQL.TabIndex = 15;
             this.txtScriptSQL.Text = "";
-            this.txtScriptSQL.Visible = false;
             this.txtScriptSQL.WordWrap = false;
             this.txtScriptSQL.TextChanged += new System.EventHandler(this.txtScriptSQL_TextChanged);
             // 
@@ -701,7 +700,7 @@
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage4.Size = new System.Drawing.Size(439, 411);
             this.tabPage4.TabIndex = 1;
-            this.tabPage4.Text = "Resultado";
+            this.tabPage4.Text = "Script SQL";
             // 
             // openFileDialog1
             // 

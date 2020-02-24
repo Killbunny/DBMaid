@@ -1098,6 +1098,8 @@ namespace DBMaid
             ambiente.tvTablasDestino = _tvTablasDestino.Nodes.ToNodeNameList();
             ambiente.tvVistasDestino = _tvVistasDestino.Nodes.ToNodeNameList();
 
+            ambiente.sentenciasWhere = _sentenciasWhere;
+
             ambiente.Catalog = txtCatalog.Text;
             ambiente.Conn = txtConnStr.Text;
 
@@ -1128,29 +1130,18 @@ namespace DBMaid
                     string ambientejson = File.ReadAllText(file);
                     Ambiente ambiente = JsonConvert.DeserializeObject<Ambiente>(ambientejson);
 
+                    ckBulkCopy.Checked = ambiente.ckBulkCopy;
+                    ckEjecutar.Checked = ambiente.ckEjecutar;
+                    ckGuardar.Checked = ambiente.ckGuardar;
+                    ckMostrar.Checked = ambiente.ckMostrar;
 
-                    #region Limpiar todos los Nodos
-                    _tvTablasOrigen.Nodes.Clear();
-                    _tvStoredOrigen.Nodes.Clear();
-                    _tvVistasOrigen.Nodes.Clear();
-                    _tvFuncionesOrigen.Nodes.Clear();
+                    txtConnStr.Text = ambiente.Conn;
+                    txtCatalog.Text = ambiente.Catalog;
 
-                    _tvTablasDestino.Nodes.Clear();
-                    _tvStoredDestino.Nodes.Clear();
-                    _tvVistasDestino.Nodes.Clear();
-                    _tvFuncionesDestino.Nodes.Clear();
-
-                    tvTablasOrigen.Nodes.Clear();
-                    tvStoredOrigen.Nodes.Clear();
-                    tvVistasOrigen.Nodes.Clear();
-                    tvFuncionesOrigen.Nodes.Clear();
-
-                    tvTablasDestino.Nodes.Clear();
-                    tvStoredDestino.Nodes.Clear();
-                    tvVistasDestino.Nodes.Clear();
-                    tvFuncionesDestino.Nodes.Clear();
-                    #endregion;
-
+                    button5_Click(null, null);
+                    
+                    _sentenciasWhere = ambiente.sentenciasWhere;
+                    
                     foreach (string s in ambiente.tvFuncionesDestino)
                     {
                         TreeNode n = new TreeNode(s);
@@ -1179,15 +1170,8 @@ namespace DBMaid
                         tvStoredDestino.Nodes.Add((TreeNode)n.Clone());
                     }
 
-                    ckBulkCopy.Checked = ambiente.ckBulkCopy;
-                    ckEjecutar.Checked = ambiente.ckEjecutar;
-                    ckGuardar.Checked = ambiente.ckGuardar;
-                    ckMostrar.Checked = ambiente.ckMostrar;
-
-                    txtConnStr.Text = ambiente.Conn;
-                    txtCatalog.Text = ambiente.Catalog;
-
-                    button5_Click(null, null);
+                    
+                    
                 }
                 catch (Exception ex)
                 {
@@ -1428,8 +1412,6 @@ namespace DBMaid
         private void tvVistasDestino_DragOver(object sender, DragEventArgs e)
         {
             Point targetPoint = tvVistasDestino.PointToClient(new Point(e.X, e.Y));
-
-            // Select the node at the mouse position.  
             tvVistasDestino.SelectedNode = tvVistasDestino.GetNodeAt(targetPoint);
         }
 
