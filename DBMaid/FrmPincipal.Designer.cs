@@ -1,6 +1,6 @@
 ﻿namespace DBMaid
 {
-    partial class Form1
+    partial class FrmPincipal
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPincipal));
             this.label1 = new System.Windows.Forms.Label();
             this.tvTablasOrigen = new System.Windows.Forms.TreeView();
             this.tvTablasDestino = new System.Windows.Forms.TreeView();
@@ -259,7 +259,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvStoredOrigen.Location = new System.Drawing.Point(6, 32);
             this.tvStoredOrigen.Name = "tvStoredOrigen";
-            this.tvStoredOrigen.Size = new System.Drawing.Size(250, 400);
+            this.tvStoredOrigen.Size = new System.Drawing.Size(250, 378);
             this.tvStoredOrigen.TabIndex = 10;
             // 
             // tvStoredDestino
@@ -268,7 +268,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvStoredDestino.Location = new System.Drawing.Point(351, 32);
             this.tvStoredDestino.Name = "tvStoredDestino";
-            this.tvStoredDestino.Size = new System.Drawing.Size(250, 400);
+            this.tvStoredDestino.Size = new System.Drawing.Size(250, 378);
             this.tvStoredDestino.TabIndex = 11;
             // 
             // button1
@@ -329,7 +329,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvVistasOrigen.Location = new System.Drawing.Point(6, 32);
             this.tvVistasOrigen.Name = "tvVistasOrigen";
-            this.tvVistasOrigen.Size = new System.Drawing.Size(250, 400);
+            this.tvVistasOrigen.Size = new System.Drawing.Size(250, 378);
             this.tvVistasOrigen.TabIndex = 16;
             // 
             // tvVistasDestino
@@ -338,7 +338,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvVistasDestino.Location = new System.Drawing.Point(351, 32);
             this.tvVistasDestino.Name = "tvVistasDestino";
-            this.tvVistasDestino.Size = new System.Drawing.Size(250, 400);
+            this.tvVistasDestino.Size = new System.Drawing.Size(250, 378);
             this.tvVistasDestino.TabIndex = 17;
             // 
             // button6
@@ -399,7 +399,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvFuncionesOrigen.Location = new System.Drawing.Point(6, 32);
             this.tvFuncionesOrigen.Name = "tvFuncionesOrigen";
-            this.tvFuncionesOrigen.Size = new System.Drawing.Size(250, 400);
+            this.tvFuncionesOrigen.Size = new System.Drawing.Size(250, 378);
             this.tvFuncionesOrigen.TabIndex = 16;
             // 
             // tvFuncionesDestino
@@ -408,7 +408,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvFuncionesDestino.Location = new System.Drawing.Point(351, 32);
             this.tvFuncionesDestino.Name = "tvFuncionesDestino";
-            this.tvFuncionesDestino.Size = new System.Drawing.Size(250, 400);
+            this.tvFuncionesDestino.Size = new System.Drawing.Size(250, 378);
             this.tvFuncionesDestino.TabIndex = 17;
             // 
             // button8
@@ -627,7 +627,7 @@
             this.txtOutput.Location = new System.Drawing.Point(13, 159);
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ReadOnly = true;
-            this.txtOutput.Size = new System.Drawing.Size(420, 246);
+            this.txtOutput.Size = new System.Drawing.Size(420, 249);
             this.txtOutput.TabIndex = 27;
             this.txtOutput.Text = "";
             this.txtOutput.WordWrap = false;

@@ -22,9 +22,9 @@ using System.Reflection;
 
 namespace DBMaid
 {
-    public partial class Form1 : Form
+    public partial class FrmPincipal : Form
     {
-        public Form1()
+        public FrmPincipal()
         {
             InitializeComponent();
         }
@@ -227,6 +227,7 @@ namespace DBMaid
             try
             {
                 cnn.Open();
+                LimpiarNodos();
                 if (cnn.State == ConnectionState.Open)
                 {
                     System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
@@ -301,6 +302,7 @@ namespace DBMaid
 
                 txtConnStr.Enabled = false;
                 txtCatalog.ReadOnly = true;
+                btnConectarYBuscar.Enabled = false;
                 cnn.Close();
             }
             catch (Exception ex)
@@ -669,6 +671,9 @@ namespace DBMaid
                 "Me da un peso de cilantro cuanto es?",
                 "DORAGON CRO",
                 "BELLI DURA DESPICIO",
+                "DB Maid: DB Maid: DB Maid: DB Maid: DB Maid: DB Maid: DB Maid: DB Maid: DB Maid: DB Maid: ",
+                "OwO",
+                "52°28'47.1″N 62°11'08.4″E",
             };
             Random random = new Random();
 
@@ -680,6 +685,12 @@ namespace DBMaid
         {
             txtConnStr.Enabled = true;
             txtCatalog.ReadOnly = false;
+            btnConectarYBuscar.Enabled = true;
+            LimpiarNodos();
+        }
+
+        private void LimpiarNodos()
+        {
             tvFuncionesOrigen.Nodes.Clear();
             tvFuncionesDestino.Nodes.Clear();
             tvStoredDestino.Nodes.Clear();
@@ -688,7 +699,6 @@ namespace DBMaid
             tvTablasOrigen.Nodes.Clear();
             tvVistasDestino.Nodes.Clear();
             tvVistasOrigen.Nodes.Clear();
-
         }
 
         private void txtFiltroTablasOrigen_TextChanged(object sender, EventArgs e)
