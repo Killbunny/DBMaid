@@ -90,6 +90,7 @@
             this.cargarAmbienteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.estoNoEsUnMemeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TabPanel.SuspendLayout();
             this.tabTablas.SuspendLayout();
             this.tabStoreds.SuspendLayout();
@@ -106,9 +107,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 31);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(139, 13);
+            this.label1.Size = new System.Drawing.Size(142, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Cadena de conexion Origen";
+            this.label1.Text = "Cadena de conexion Origen:";
             // 
             // tvTablasOrigen
             // 
@@ -198,7 +199,7 @@
             // 
             // btnConectarYBuscar
             // 
-            this.btnConectarYBuscar.Location = new System.Drawing.Point(650, 26);
+            this.btnConectarYBuscar.Location = new System.Drawing.Point(633, 26);
             this.btnConectarYBuscar.Name = "btnConectarYBuscar";
             this.btnConectarYBuscar.Size = new System.Drawing.Size(108, 22);
             this.btnConectarYBuscar.TabIndex = 11;
@@ -471,7 +472,8 @@
             // 
             this.txtCatalog.Location = new System.Drawing.Point(157, 51);
             this.txtCatalog.Name = "txtCatalog";
-            this.txtCatalog.Size = new System.Drawing.Size(487, 20);
+            this.txtCatalog.ReadOnly = true;
+            this.txtCatalog.Size = new System.Drawing.Size(470, 20);
             this.txtCatalog.TabIndex = 1;
             // 
             // label2
@@ -479,9 +481,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(43, 13);
+            this.label2.Size = new System.Drawing.Size(46, 13);
             this.label2.TabIndex = 13;
-            this.label2.Text = "Catalog";
+            this.label2.Text = "Catalog:";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // txtScriptSQL
@@ -510,7 +512,7 @@
             // 
             // btnDesconectar
             // 
-            this.btnDesconectar.Location = new System.Drawing.Point(650, 51);
+            this.btnDesconectar.Location = new System.Drawing.Point(633, 51);
             this.btnDesconectar.Name = "btnDesconectar";
             this.btnDesconectar.Size = new System.Drawing.Size(108, 22);
             this.btnDesconectar.TabIndex = 18;
@@ -711,7 +713,7 @@
             this.txtConnStr.FormattingEnabled = true;
             this.txtConnStr.Location = new System.Drawing.Point(157, 27);
             this.txtConnStr.Name = "txtConnStr";
-            this.txtConnStr.Size = new System.Drawing.Size(487, 21);
+            this.txtConnStr.Size = new System.Drawing.Size(470, 21);
             this.txtConnStr.TabIndex = 26;
             // 
             // menuStrip1
@@ -759,9 +761,17 @@
             // 
             // ayudaToolStripMenuItem
             // 
+            this.ayudaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.estoNoEsUnMemeToolStripMenuItem});
             this.ayudaToolStripMenuItem.Name = "ayudaToolStripMenuItem";
             this.ayudaToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.ayudaToolStripMenuItem.Text = "Ayuda";
+            // 
+            // estoNoEsUnMemeToolStripMenuItem
+            // 
+            this.estoNoEsUnMemeToolStripMenuItem.Name = "estoNoEsUnMemeToolStripMenuItem";
+            this.estoNoEsUnMemeToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+            this.estoNoEsUnMemeToolStripMenuItem.Text = "Esto no es un meme";
             // 
             // FrmPincipal
             // 
@@ -865,6 +875,7 @@
         private System.Windows.Forms.ToolStripMenuItem cargarAmbienteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem guardarAmbienteToolStripMenuItem;
         private System.Windows.Forms.RichTextBox txtOutput;
+        private System.Windows.Forms.ToolStripMenuItem estoNoEsUnMemeToolStripMenuItem;
     }
 }
 

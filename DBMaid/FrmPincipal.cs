@@ -245,10 +245,10 @@ namespace DBMaid
                     config.AppSettings.Settings.AllKeys.ToList().ForEach(key => { txtConnStr.Items.Add(config.AppSettings.Settings[key].Value); });
                 }
 
-                if (txtCatalog.Text == null || txtCatalog.Text.Trim().Equals(""))
-                {
-                    txtCatalog.Text = csp.Where(x => x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE")).Single().Split('=').Where(x => !(x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE"))).Single();
-                }
+                //if (txtCatalog.Text == null || txtCatalog.Text.Trim().Equals(""))
+                //{
+                txtCatalog.Text = csp.Where(x => x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE")).Single().Split('=').Where(x => !(x.ToUpper().Contains("INITIAL CATALOG") || x.ToUpper().Contains("DATABASE"))).Single();
+                //}
 
                 #region Tablas
                 tvTablasOrigen.Nodes.Clear();
@@ -346,14 +346,26 @@ namespace DBMaid
         {
             try
             {
-                var nodo = tvTablasDestino.SelectedNode;
-                tvTablasDestino.Nodes.Remove(nodo);
-                TreeNode _nodo = null;
-                foreach (TreeNode n in _tvTablasDestino.Nodes)
-                {
-                    if (n.Text == nodo.Text) { _nodo = n; break; };
-                }
-                if (_nodo != null) _tvTablasDestino.Nodes.Remove(_nodo);
+
+                tvTablasDestino.Nodes.ToList()
+                   .Where(n => n.Checked).ToList().ForEach(nodo =>
+                   {
+                       if (!tvTablasDestino.Nodes.ToList().Where(nd => nd.Text == nodo.Text).Any())
+                       {
+                           tvTablasDestino.Nodes.Add((TreeNode)nodo.Clone());
+                           _tvTablasDestino.Nodes.Add((TreeNode)nodo.Clone());
+                       }
+                   });
+
+
+                //var nodo = tvTablasDestino.SelectedNode;
+                //tvTablasDestino.Nodes.Remove(nodo);
+                //TreeNode _nodo = null;
+                //foreach (TreeNode n in _tvTablasDestino.Nodes)
+                //{
+                //    if (n.Text == nodo.Text) { _nodo = n; break; };
+                //}
+                //if (_nodo != null) _tvTablasDestino.Nodes.Remove(_nodo);
             }
             catch (Exception)
             {
@@ -1139,9 +1151,9 @@ namespace DBMaid
                     txtCatalog.Text = ambiente.Catalog;
 
                     button5_Click(null, null);
-                    
+
                     _sentenciasWhere = ambiente.sentenciasWhere;
-                    
+
                     foreach (string s in ambiente.tvFuncionesDestino)
                     {
                         TreeNode n = new TreeNode(s);
@@ -1170,8 +1182,8 @@ namespace DBMaid
                         tvStoredDestino.Nodes.Add((TreeNode)n.Clone());
                     }
 
-                    
-                    
+
+
                 }
                 catch (Exception ex)
                 {
@@ -1300,7 +1312,7 @@ namespace DBMaid
         }
 
         private bool ContainsNode(TreeNode node1, TreeNode node2)
-        {  
+        {
             if (node2.Parent == null) return false;
             if (node2.Parent.Equals(node1)) return true;
             return ContainsNode(node1, node2.Parent);
@@ -1333,7 +1345,8 @@ namespace DBMaid
                     _treeview.Nodes.Clear();
                     treeview.Nodes.Clear();
 
-                    lstNodos.ForEach(x => {
+                    lstNodos.ForEach(x =>
+                    {
                         _treeview.Nodes.Add((TreeNode)x.Clone());
                         treeview.Nodes.Add((TreeNode)x.Clone());
                     });
