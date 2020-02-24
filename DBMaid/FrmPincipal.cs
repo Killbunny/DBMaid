@@ -307,7 +307,7 @@ namespace DBMaid
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Can not open connection ! ");
+                MessageBox.Show("Error:"+ ex.Message);
             }
 
         }
@@ -478,7 +478,7 @@ namespace DBMaid
             catch (Exception ex)
             {
 
-                throw;
+                throw ex;
             }
         }
 
@@ -630,7 +630,7 @@ namespace DBMaid
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -936,7 +936,6 @@ namespace DBMaid
         private void EjecutarScript()
         {
             string connetionString = null;
-            SqlConnection cnn;
             connetionString = CADENA_CONEXION_LOCAL.Replace("{instancia}", cbDBsLocales.Text);
             try
             {
@@ -1054,8 +1053,6 @@ namespace DBMaid
 
         private void button5_Click_1(object sender, EventArgs e)
         {
-
-            int size = -1;
             openFileDialog1.FileName = "";
             openFileDialog1.DefaultExt = ".json";
             openFileDialog1.Filter = "JSON (.json)|*.json";
@@ -1131,7 +1128,7 @@ namespace DBMaid
                 }
                 catch (Exception ex)
                 {
-                    var a = 1 + 1;
+                    MessageBox.Show("Error: " + ex.Message);
                 }
             }
 
