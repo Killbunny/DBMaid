@@ -91,6 +91,7 @@
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.estoNoEsUnMemeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button10 = new System.Windows.Forms.Button();
             this.TabPanel.SuspendLayout();
             this.tabTablas.SuspendLayout();
             this.tabStoreds.SuspendLayout();
@@ -105,7 +106,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 31);
+            this.label1.Location = new System.Drawing.Point(13, 32);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(142, 13);
             this.label1.TabIndex = 0;
@@ -118,7 +119,7 @@
             this.tvTablasOrigen.CheckBoxes = true;
             this.tvTablasOrigen.Location = new System.Drawing.Point(6, 32);
             this.tvTablasOrigen.Name = "tvTablasOrigen";
-            this.tvTablasOrigen.Size = new System.Drawing.Size(250, 378);
+            this.tvTablasOrigen.Size = new System.Drawing.Size(250, 365);
             this.tvTablasOrigen.TabIndex = 1;
             this.tvTablasOrigen.Click += new System.EventHandler(this.tvTablasOrigen_Click);
             this.tvTablasOrigen.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.tvTablasOrigen_MouseDoubleClick);
@@ -130,7 +131,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.tvTablasDestino.Location = new System.Drawing.Point(351, 32);
             this.tvTablasDestino.Name = "tvTablasDestino";
-            this.tvTablasDestino.Size = new System.Drawing.Size(250, 378);
+            this.tvTablasDestino.Size = new System.Drawing.Size(250, 365);
             this.tvTablasDestino.TabIndex = 2;
             this.tvTablasDestino.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.tvTablasDestino_ItemDrag);
             this.tvTablasDestino.DragDrop += new System.Windows.Forms.DragEventHandler(this.tvTablasDestino_DragDrop);
@@ -199,7 +200,7 @@
             // 
             // btnConectarYBuscar
             // 
-            this.btnConectarYBuscar.Location = new System.Drawing.Point(633, 26);
+            this.btnConectarYBuscar.Location = new System.Drawing.Point(633, 27);
             this.btnConectarYBuscar.Name = "btnConectarYBuscar";
             this.btnConectarYBuscar.Size = new System.Drawing.Size(108, 22);
             this.btnConectarYBuscar.TabIndex = 11;
@@ -215,10 +216,10 @@
             this.TabPanel.Controls.Add(this.tabStoreds);
             this.TabPanel.Controls.Add(this.tabPage2);
             this.TabPanel.Controls.Add(this.tabPage1);
-            this.TabPanel.Location = new System.Drawing.Point(12, 77);
+            this.TabPanel.Location = new System.Drawing.Point(12, 90);
             this.TabPanel.Name = "TabPanel";
             this.TabPanel.SelectedIndex = 0;
-            this.TabPanel.Size = new System.Drawing.Size(615, 439);
+            this.TabPanel.Size = new System.Drawing.Size(615, 426);
             this.TabPanel.TabIndex = 2;
             // 
             // tabTablas
@@ -233,7 +234,7 @@
             this.tabTablas.Location = new System.Drawing.Point(4, 22);
             this.tabTablas.Name = "tabTablas";
             this.tabTablas.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTablas.Size = new System.Drawing.Size(607, 413);
+            this.tabTablas.Size = new System.Drawing.Size(607, 400);
             this.tabTablas.TabIndex = 0;
             this.tabTablas.Text = "Tablas";
             // 
@@ -470,7 +471,7 @@
             // 
             // txtCatalog
             // 
-            this.txtCatalog.Location = new System.Drawing.Point(157, 51);
+            this.txtCatalog.Location = new System.Drawing.Point(158, 52);
             this.txtCatalog.Name = "txtCatalog";
             this.txtCatalog.ReadOnly = true;
             this.txtCatalog.Size = new System.Drawing.Size(470, 20);
@@ -479,7 +480,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 54);
+            this.label2.Location = new System.Drawing.Point(13, 55);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(46, 13);
             this.label2.TabIndex = 13;
@@ -512,7 +513,7 @@
             // 
             // btnDesconectar
             // 
-            this.btnDesconectar.Location = new System.Drawing.Point(633, 51);
+            this.btnDesconectar.Location = new System.Drawing.Point(634, 52);
             this.btnDesconectar.Name = "btnDesconectar";
             this.btnDesconectar.Size = new System.Drawing.Size(108, 22);
             this.btnDesconectar.TabIndex = 18;
@@ -616,10 +617,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Location = new System.Drawing.Point(633, 79);
+            this.tabControl1.Location = new System.Drawing.Point(633, 80);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(447, 437);
+            this.tabControl1.Size = new System.Drawing.Size(447, 436);
             this.tabControl1.TabIndex = 25;
             // 
             // tabPage3
@@ -643,7 +644,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(439, 411);
+            this.tabPage3.Size = new System.Drawing.Size(439, 410);
             this.tabPage3.TabIndex = 0;
             this.tabPage3.Text = "Tareas";
             // 
@@ -656,7 +657,7 @@
             this.txtOutput.Location = new System.Drawing.Point(13, 159);
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.ReadOnly = true;
-            this.txtOutput.Size = new System.Drawing.Size(420, 249);
+            this.txtOutput.Size = new System.Drawing.Size(420, 248);
             this.txtOutput.TabIndex = 27;
             this.txtOutput.Text = "";
             this.txtOutput.WordWrap = false;
@@ -711,7 +712,7 @@
             // txtConnStr
             // 
             this.txtConnStr.FormattingEnabled = true;
-            this.txtConnStr.Location = new System.Drawing.Point(157, 27);
+            this.txtConnStr.Location = new System.Drawing.Point(158, 28);
             this.txtConnStr.Name = "txtConnStr";
             this.txtConnStr.Size = new System.Drawing.Size(470, 21);
             this.txtConnStr.TabIndex = 26;
@@ -773,11 +774,22 @@
             this.estoNoEsUnMemeToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
             this.estoNoEsUnMemeToolStripMenuItem.Text = "Esto no es un meme";
             // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(747, 27);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(108, 22);
+            this.button10.TabIndex = 28;
+            this.button10.Text = "Conectar y Buscar";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click_2);
+            // 
             // FrmPincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1092, 528);
+            this.Controls.Add(this.button10);
             this.Controls.Add(this.txtConnStr);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnDesconectar);
@@ -790,7 +802,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FrmPincipal";
-            this.Text = "DB Maid";
+            this.Text = "Probar conexión";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.TabPanel.ResumeLayout(false);
             this.tabTablas.ResumeLayout(false);
@@ -876,6 +888,7 @@
         private System.Windows.Forms.ToolStripMenuItem guardarAmbienteToolStripMenuItem;
         private System.Windows.Forms.RichTextBox txtOutput;
         private System.Windows.Forms.ToolStripMenuItem estoNoEsUnMemeToolStripMenuItem;
+        private System.Windows.Forms.Button button10;
     }
 }
 

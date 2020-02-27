@@ -1442,6 +1442,44 @@ namespace DBMaid
         {
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
+
+        private void button10_Click_2(object sender, EventArgs e)
+        {
+            string connetionString = null;
+            SqlConnection cnn;
+            connetionString = txtConnStr.Text;
+            cnn = new SqlConnection(connetionString);
+            var csp = connetionString.Split(';');
+            try
+            {
+                cnn.Open();
+                LimpiarNodos();
+                if (cnn.State == ConnectionState.Open)
+                {
+                    #region guarda la conexion
+                    System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
+
+                    var csNombre = csp.Where(x => x.ToUpper().Contains("DATA SOURCE") || x.ToUpper().Contains("SERVER")).Single().Split('=').Where(x => !(x.ToUpper().Contains("DATA SOURCE") || x.ToUpper().Contains("SERVER"))).Single();
+                    config.AppSettings.Settings.Remove(csNombre);
+                    config.AppSettings.Settings.Add(csNombre, connetionString);
+                    config.Save(ConfigurationSaveMode.Modified);
+                    //config.AppSettings.Settings.Remove("MySetting");
+
+                    txtConnStr.Items.Clear();
+                    config.AppSettings.Settings.AllKeys.ToList().ForEach(key => { txtConnStr.Items.Add(config.AppSettings.Settings[key].Value); });
+                    #endregion
+                    MessageBox.Show("😎👌 \nYEET","Información",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("😔🔫 \n Conexion no abierta" ,"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("😔🔫 \n" + ex.Message,"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
     namespace ExtensionMethods
     {
